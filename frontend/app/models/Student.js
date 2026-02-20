@@ -8,6 +8,13 @@ const studentSchema = new mongoose.Schema(
       trim: true,
     },
 
+    rollNo: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+
     email: {
       type: String,
       required: true,
