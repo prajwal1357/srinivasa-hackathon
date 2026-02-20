@@ -16,6 +16,14 @@ const studentSchema = new mongoose.Schema(
       trim: true,
     },
 
+    usn: {
+      type: String,
+      required: true,
+      unique: true, // Prevent duplicate students
+      uppercase: true,
+      trim: true,
+    },
+
     password: {
       type: String,
       required: true,
