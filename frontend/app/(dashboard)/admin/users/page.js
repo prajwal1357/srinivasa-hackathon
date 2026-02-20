@@ -34,7 +34,7 @@ export default function CircularControl() {
     <div className="max-w-4xl mx-auto space-y-12 font-mono animate-in fade-in slide-in-from-bottom-6 duration-700">
       
       {/* 🔷 PAGE HEADER - Constructivist Style */}
-      <div className="relative overflow-hidden bg-[#1E293B] border-4 border-black p-8 rounded-[2rem] shadow-[10px_10px_0px_0px_rgba(255,138,91,1)] text-white">
+      <div className="relative overflow-hidden bg-[#1E293B] border-4 border-black p-8 rounded-4xl shadow-[10px_10px_0px_0px_rgba(255,138,91,1)] text-white">
         {/* Floating Sticker */}
         <div className="absolute top-4 right-8 w-24 h-24 bg-[#FFD600] border-4 border-black rounded-full flex items-center justify-center -rotate-12 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-black font-black text-xs uppercase text-center leading-none z-20">
           Admin<br/>Control
@@ -84,7 +84,7 @@ export default function CircularControl() {
             required
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            className="w-full p-5 border-4 border-black rounded-[2rem] bg-[#F8FAFC] focus:bg-[#DBEAFE] outline-none font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-none focus:translate-x-1 focus:translate-y-1 transition-all"
+            className="w-full p-5 border-4 border-black rounded-4xl bg-[#F8FAFC] focus:bg-[#DBEAFE] outline-none font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-none focus:translate-x-1 focus:translate-y-1 transition-all"
             placeholder="Enter the core message here..."
           />
         </div>

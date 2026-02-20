@@ -61,7 +61,7 @@ export default function AnalyticsPanel() {
           </h3>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 bg-[#CCFBF1] border-4 border-black p-8 rounded-[2rem] shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]" 
+        <div className="grid md:grid-cols-3 gap-8 bg-[#CCFBF1] border-4 border-black p-8 rounded-4xl shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]" 
              style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '20px 20px', backgroundAlpha: '0.05' }}>
           
           <Card
@@ -96,7 +96,7 @@ export default function AnalyticsPanel() {
           </h3>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 bg-[#DBEAFE] border-4 border-black p-8 rounded-[2rem] shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]"
+        <div className="grid md:grid-cols-3 gap-8 bg-[#DBEAFE] border-4 border-black p-8 rounded-4xl shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]"
              style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
 
           <Card
@@ -132,7 +132,7 @@ export default function AnalyticsPanel() {
           </h3>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 bg-[#FEF9C3] border-4 border-black p-8 rounded-[2rem] shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
+        <div className="grid md:grid-cols-2 gap-8 bg-[#FEF9C3] border-4 border-black p-8 rounded-4xl shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
 
           <Card
             icon={TrendingUp}
