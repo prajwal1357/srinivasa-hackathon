@@ -20,6 +20,7 @@ export default function AdminLayout({ children }) {
     { name: "Users", path: "/admin/users", icon: Upload },
     { name: "Analytics", path: "/admin/analytics", icon: ChartLine },
     { name: "Verify Faculty", path: "/admin/approvedfac", icon: CheckCircleIcon },
+    { name: "Assign fuckers", path: "/admin/assign-faculty", icon: CheckCircleIcon },
   ];
 
   return (
