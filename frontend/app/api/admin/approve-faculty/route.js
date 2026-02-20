@@ -1,5 +1,6 @@
 import { connectDB } from "@/lib/db";
 import User from "@/models/User";
+import mongoose from "mongoose";
 
 export async function PATCH(req) {
   try {
@@ -14,16 +15,26 @@ export async function PATCH(req) {
       );
     }
 
-    const faculty = await User.findOne({
-      _id: userId,
-      role: "faculty",
-      status: "pending",
-    });
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return Response.json(
+        { message: "Invalid user ID" },
+        { status: 400 }
+      );
+    }
+
+    const faculty = await User.findById(userId);
 
     if (!faculty) {
       return Response.json(
-        { message: "Pending faculty not found" },
+        { message: "Faculty not found" },
         { status: 404 }
+      );
+    }
+
+    if (faculty.role !== "faculty") {
+      return Response.json(
+        { message: "User is not faculty" },
+        { status: 400 }
       );
     }
 
@@ -37,7 +48,7 @@ export async function PATCH(req) {
   } catch (error) {
     console.error("Approve Faculty Error:", error);
     return Response.json(
-      { message: "Internal server error" },
+      { message: error.message },
       { status: 500 }
     );
   }
