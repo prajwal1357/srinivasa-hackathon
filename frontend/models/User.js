@@ -2,7 +2,11 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, trim: true },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
     email: {
       type: String,
@@ -12,7 +16,10 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
-    password: { type: String, required: true },
+    password: {
+      type: String,
+      required: true,
+    },
 
     role: {
       type: String,
@@ -26,9 +33,24 @@ const userSchema = new mongoose.Schema(
       default: "pending",
     },
 
-    // Student-only fields
-    usn: { type: String, trim: true, uppercase: true },
-    class: { type: mongoose.Schema.Types.ObjectId, ref: "Class" },
+    // Student-only
+    usn: {
+      type: String,
+      trim: true,
+      uppercase: true,
+      sparse: true,
+    },
+
+    class: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Class",
+      default: null,
+    },
+
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );

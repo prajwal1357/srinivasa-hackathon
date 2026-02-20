@@ -1,5 +1,5 @@
 import { connectDB } from "@/lib/db";
-import Class from "@/app/models/Class";
+import Class from "@/models/Class";
 
 export async function GET() {
   try {

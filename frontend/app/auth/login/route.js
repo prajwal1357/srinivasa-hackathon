@@ -1,5 +1,5 @@
 import { connectDB } from "@/lib/db";
-import User from "@/app/models/User";
+import User from "@/models/User";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
