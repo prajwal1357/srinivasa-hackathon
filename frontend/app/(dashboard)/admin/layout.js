@@ -1,7 +1,6 @@
 "use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Bell,
@@ -9,10 +8,12 @@ import {
   LogOut,
   ChartLine,
   CheckCircleIcon,
+  UserCheck,
 } from "lucide-react";
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
+  const router = useRouter();
 
   const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
@@ -20,8 +21,25 @@ export default function AdminLayout({ children }) {
     { name: "Notice Control", path: "/admin/users", icon: Upload },
     { name: "Analytics", path: "/admin/analytics", icon: ChartLine },
     { name: "Verify Faculty", path: "/admin/approvedfac", icon: CheckCircleIcon },
-    { name: "Assign fuckers", path: "/admin/assign-faculty", icon: CheckCircleIcon },
+    { name: "Assign faculty", path: "/admin/assign-faculty", icon: UserCheck },
   ];
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/auth/logout", {
+        method: "POST",
+      });
+
+      if (res.ok) {
+        router.replace("/login"); // Prevents going back
+      } else {
+        alert("Logout failed");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert("Something went wrong");
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-200">
@@ -69,6 +87,7 @@ export default function AdminLayout({ children }) {
         {/* Logout Section */}
         <div className="p-4 border-t border-gray-800">
           <button
+            onClick={handleLogout}
             className="
               flex items-center gap-3 w-full px-4 py-3
               bg-blue-600 text-white font-semibold

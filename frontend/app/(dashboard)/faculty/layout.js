@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRoute } from "next/navigation";
 import {
   LayoutDashboard,
   Bell,
@@ -13,6 +13,8 @@ import {
 
 export default function FacultyLayout({ children }) {
   const pathname = usePathname();
+    const router = useRouter();
+  
 
   const menuItems = [
     { name: "Dashboard", path: "/faculty/dashboard", icon: LayoutDashboard },
@@ -21,6 +23,23 @@ export default function FacultyLayout({ children }) {
     { name: "Verify", path: "/faculty/verify", icon: CheckCircle },
     { name: "Send Message", path: "/faculty/sendmsg", icon: MessageCircleCode },
   ];
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/auth/logout", {
+        method: "POST",
+      });
+
+      if (res.ok) {
+        router.replace("/login"); // Prevents going back
+      } else {
+        alert("Logout failed");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert("Something went wrong");
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -68,6 +87,7 @@ export default function FacultyLayout({ children }) {
         {/* Logout Section */}
         <div className="p-4 border-t border-gray-800">
           <button
+          onClick={handleLogout}
             className="
               flex items-center gap-3 w-full px-4 py-3
               bg-green-500 text-black font-semibold
