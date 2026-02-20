@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from 'react';
 import { 
   User, 
@@ -11,9 +12,10 @@ import {
   IdCard,
   ChevronDown
 } from 'lucide-react';
+import Link from 'next/link';
 
-const App = () => {
-  const [role, setRole] = useState('student'); // 'student' or 'faculty'
+const SignupPage = () => {
+  const [role, setRole] = useState('student');
   const [loading, setLoading] = useState(false);
   const [classes, setClasses] = useState([]);
   const [message, setMessage] = useState({ type: '', text: '' });
@@ -23,24 +25,21 @@ const App = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    rollNo: '',
     usn: '',
     classId: '',
   });
 
-  // Fetch classes for the dropdown
+  // Fetch classes for students
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        // Mocking the class list
-        const mockClasses = [
-          { _id: '1', name: '1st Year BCA A' },
-          { _id: '2', name: '2nd Year BCA B' },
-          { _id: '3', name: '3rd Year BCA A' },
-        ];
-        setClasses(mockClasses);
+        const response = await fetch('/auth/classes');
+        if (response.ok) {
+          const data = await response.json();
+          setClasses(data);
+        }
       } catch (err) {
-        console.error("Error fetching classes");
+        console.error("Error fetching classes:", err);
       }
     };
     fetchClasses();
@@ -66,17 +65,18 @@ const App = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/signup', {
+      const response = await fetch('/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.name,
-          email: formData.email,
+          email: formData.email.toLowerCase(),
           password: formData.password,
-          role: role,
-          classId: role === 'student' ? formData.classId : undefined,
-          usn: role === 'student' ? formData.usn : undefined,
-          rollNo: role === 'student' ? formData.rollNo : undefined
+          role,
+          ...(role === 'student' && {
+            ...(formData.classId && { classId: formData.classId }),
+            ...(formData.usn && { usn: formData.usn }),
+          }),
         }),
       });
 
@@ -87,7 +87,7 @@ const App = () => {
       }
 
       setMessage({ type: 'success', text: data.message });
-      setFormData({ name: '', email: '', password: '', confirmPassword: '', rollNo: '', usn: '', classId: '' });
+      setFormData({ name: '', email: '', password: '', confirmPassword: '', usn: '', classId: '' });
     } catch (err) {
       setMessage({ type: 'error', text: err.message });
     } finally {
@@ -99,169 +99,156 @@ const App = () => {
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div className="w-full max-w-md">
         
-        {/* Branding/Header */}
+        {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-200 mb-4">
-            <GraduationCap size={28} />
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-indigo-600 rounded-2xl text-white shadow-xl shadow-indigo-200 mb-4 transform transition-hover hover:rotate-6">
+            <GraduationCap size={32} />
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Create an account</h1>
-          <p className="text-slate-500 text-sm mt-1">Join our academic portal to get started</p>
+          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Create Account</h1>
+          <p className="text-slate-500 text-sm mt-2">Join the portal as a {role}</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+        <div className="bg-white rounded-3xl shadow-2xl shadow-slate-200/60 border border-slate-100 overflow-hidden">
           
-          {/* Role Toggle Tabs */}
-          <div className="flex p-1 bg-slate-100/80 m-6 rounded-xl">
+          {/* Role Toggle */}
+          <div className="flex p-1.5 bg-slate-100/80 m-6 rounded-2xl">
             <button
-              onClick={() => setRole('student')}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all ${
+              type="button"
+              onClick={() => { setRole('student'); setMessage({type:'', text:''}); }}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold rounded-xl transition-all duration-200 ${
                 role === 'student' 
-                ? 'bg-white text-indigo-600 shadow-sm' 
+                ? 'bg-white text-indigo-600 shadow-md transform scale-[1.02]' 
                 : 'text-slate-500 hover:text-slate-700'
               }`}
             >
-              <User size={16} />
+              <User size={18} />
               Student
             </button>
             <button
-              onClick={() => setRole('faculty')}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all ${
+              type="button"
+              onClick={() => { setRole('faculty'); setMessage({type:'', text:''}); }}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold rounded-xl transition-all duration-200 ${
                 role === 'faculty' 
-                ? 'bg-white text-indigo-600 shadow-sm' 
+                ? 'bg-white text-indigo-600 shadow-md transform scale-[1.02]' 
                 : 'text-slate-500 hover:text-slate-700'
               }`}
             >
-              <IdCard size={16} />
+              <IdCard size={18} />
               Faculty
             </button>
           </div>
 
-          <div className="px-8 pb-8">
-            {/* Notifications */}
+          <div className="px-8 pb-10">
+            {/* Status Messages */}
             {message.text && (
-              <div className={`mb-6 p-4 rounded-xl flex items-start gap-3 text-sm font-medium border ${
+              <div className={`mb-6 p-4 rounded-2xl flex items-start gap-3 text-sm font-semibold border ${
                 message.type === 'success' 
                 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
                 : 'bg-rose-50 text-rose-700 border-rose-100'
               }`}>
-                {message.type === 'success' ? <CheckCircle size={18} className="shrink-0 mt-0.5" /> : <AlertCircle size={18} className="shrink-0 mt-0.5" />}
+                {message.type === 'success' ? <CheckCircle size={20} className="shrink-0" /> : <AlertCircle size={20} className="shrink-0" />}
                 <span>{message.text}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Full Name */}
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider ml-1">Full Name</label>
-                <div className="relative group">
-                  <User className="absolute left-3 top-3 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Name */}
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Full Name</label>
+                <div className="relative">
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                   <input
                     required
                     type="text"
                     name="name"
-                    placeholder="e.g. Alex Johnson"
+                    placeholder="Enter your full name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-slate-400"
+                    className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
                   />
                 </div>
               </div>
 
               {/* Email */}
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider ml-1">Email Address</label>
-                <div className="relative group">
-                  <Mail className="absolute left-3 top-3 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                   <input
                     required
                     type="email"
                     name="email"
-                    placeholder="alex@institution.edu"
+                    placeholder="name@institution.edu"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-slate-400"
+                    className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
                   />
                 </div>
               </div>
 
-              {/* Student Fields Row */}
+              {/* Student-only: USN & Class */}
               {role === 'student' && (
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider ml-1">Roll No</label>
+                <>
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">USN</label>
                     <input
-                      required
-                      type="text"
-                      name="rollNo"
-                      placeholder="001"
-                      value={formData.rollNo}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider ml-1">USN</label>
-                    <input
-                      required
                       type="text"
                       name="usn"
-                      placeholder="1XX00..."
+                      placeholder="e.g. 1SI22CS045"
                       value={formData.usn}
                       onChange={handleChange}
-                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-mono uppercase"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-mono"
                     />
                   </div>
-                </div>
-              )}
 
-              {/* Class Selection */}
-              {role === 'student' && (
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wider ml-1">Current Class</label>
-                  <div className="relative group">
-                    <BookOpen className="absolute left-3 top-3 text-slate-400 group-focus-within:text-indigo-500" size={18} />
-                    <select
-                      required
-                      name="classId"
-                      value={formData.classId}
-                      onChange={handleChange}
-                      className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer"
-                    >
-                      <option value="">Select your class</option>
-                      {classes.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-3.5 text-slate-400 pointer-events-none" size={16} />
-                  </div>
-                </div>
+                  {classes.length > 0 && (
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Class</label>
+                      <div className="relative">
+                        <BookOpen className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                        <select
+                          name="classId"
+                          value={formData.classId}
+                          onChange={handleChange}
+                          className="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer"
+                        >
+                          <option value="">Select Class (optional)</option>
+                          {classes.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
+                        </select>
+                        <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={18} />
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
 
               {/* Passwords */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-50">
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wider ml-1">Password</label>
-                  <div className="relative group">
-                    <Lock className="absolute left-3 top-3 text-slate-400 group-focus-within:text-indigo-500" size={18} />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <input
                       required
                       type="password"
                       name="password"
                       value={formData.password}
                       onChange={handleChange}
-                      className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
+                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
                     />
                   </div>
                 </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wider ml-1">Confirm</label>
-                  <div className="relative group">
-                    <Lock className="absolute left-3 top-3 text-slate-400 group-focus-within:text-indigo-500" size={18} />
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Confirm</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <input
                       required
                       type="password"
                       name="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleChange}
-                      className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
+                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -270,23 +257,40 @@ const App = () => {
               <button
                 disabled={loading}
                 type="submit"
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-70 active:scale-[0.98]"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-100 transition-all flex items-center justify-center gap-3 mt-6 disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.97]"
               >
-                {loading ? <Loader2 className="animate-spin" size={20} /> : 'Create Account'}
+                {loading ? (
+                  <>
+                    <Loader2 className="animate-spin" size={20} />
+                    <span>Processing...</span>
+                  </>
+                ) : (
+                  'Create Account'
+                )}
               </button>
             </form>
+
+            {/* Link to login */}
+            <div className="mt-6 text-center text-sm text-slate-500">
+              Already have an account?{' '}
+              <Link href="/login" className="font-semibold text-indigo-600 hover:underline">
+                Sign in
+              </Link>
+            </div>
           </div>
         </div>
 
-        {/* Informational Footer */}
-        <p className="mt-8 text-center text-xs text-slate-400 leading-relaxed px-4">
-          By signing up, you agree to our terms of service. Your account will be 
-          <span className="font-semibold text-slate-500"> pending </span> 
-          until verified by a {role === 'student' ? 'Faculty' : 'System Admin'}.
-        </p>
+        {/* Footer */}
+        <div className="mt-8 px-4 text-center">
+          <p className="text-xs text-slate-400 leading-relaxed">
+            By signing up, you agree to our terms. Your account will be 
+            <span className="font-bold text-slate-500"> pending </span> 
+            until approved by an administrator.
+          </p>
+        </div>
       </div>
     </div>
   );
 };
 
-export default App;
+export default SignupPage;

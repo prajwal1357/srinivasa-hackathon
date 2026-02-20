@@ -7,10 +7,10 @@ if (!MONGODB_URI) {
 }
 
 // Prevent multiple connections in development (important)
-let cached = global.mongoose;
+let cached = global._mongoose;
 
 if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
+  cached = global._mongoose = { conn: null, promise: null };
 }
 
 export async function connectDB() {

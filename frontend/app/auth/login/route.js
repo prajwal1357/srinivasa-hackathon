@@ -1,6 +1,5 @@
 import { connectDB } from "@/lib/db";
-import Student from "@/models/Student";
-import Faculty from "@/models/Faculty";
+import User from "@/app/models/User";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
@@ -11,13 +10,7 @@ export async function POST(req) {
 
     const { email, password } = await req.json();
 
-    let user = await Student.findOne({ email }).populate("class");
-    let role = "student";
-
-    if (!user) {
-      user = await Faculty.findOne({ email });
-      role = "faculty";
-    }
+    const user = await User.findOne({ email });
 
     if (!user) {
       return Response.json({ message: "User not found" }, { status: 404 });
@@ -37,28 +30,25 @@ export async function POST(req) {
     }
 
     const token = jwt.sign(
-      {
-        id: user._id,
-        role: role,
-      },
+      { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
-    cookies().set("token", token, {
+    (await cookies()).set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
-      maxAge: 60 * 60 * 24 * 7, 
+      maxAge: 60 * 60 * 24 * 7,
     });
 
     return Response.json({
       message: "Login successful",
-      role,
+      role: user.role,
     });
-
   } catch (error) {
+    console.error(error);
     return Response.json({ message: "Server error" }, { status: 500 });
   }
 }

@@ -11,200 +11,164 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
 
-const DEPARTMENTS = [
-  "Computer Science & Engineering",
-  "Electronics & Communication",
-  "Mechanical Engineering",
-  "Civil Engineering",
-  "Electrical Engineering",
-  "Information Science",
-  "Artificial Intelligence & ML",
-  "Data Science",
-];
+const inputCls =
+  "h-11 rounded-lg border-gray-200 focus:ring-2 focus:ring-primary/20";
 
-const SEMESTERS = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"];
+export default function LoginPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-const DESIGNATIONS = [
-  "Assistant Professor",
-  "Associate Professor",
-  "Professor",
-  "Senior Professor",
-  "Visiting Faculty",
-];
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-const inputCls = "h-11 rounded-lg border-gray-200 focus:ring-2 focus:ring-primary/20";
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage({ type: "", text: "" });
 
+    if (!formData.email || !formData.password) {
+      setMessage({ type: "error", text: "Please fill in all fields." });
+      return;
+    }
 
+    setLoading(true);
 
-function StudentFields() {
-  return (
-    <div className="space-y-4">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="stu-name">Full Name</Label>
-          <Input id="stu-name" placeholder="Jane Smith" className={inputCls} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="stu-usn">USN / Roll Number</Label>
-          <Input id="stu-usn" placeholder="1SI22CS045" className={inputCls} />
-        </div>
-      </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="stu-dept">Department</Label>
-          <Select>
-            <SelectTrigger className={inputCls}>
-              <SelectValue placeholder="Select" />
-            </SelectTrigger>
-            <SelectContent>
-              {DEPARTMENTS.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="stu-sem">Semester</Label>
-          <Select>
-            <SelectTrigger className={inputCls}>
-              <SelectValue placeholder="Select" />
-            </SelectTrigger>
-            <SelectContent>
-              {SEMESTERS.map((s) => <SelectItem key={s} value={s}>{s} Sem</SelectItem>)}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-    </div>
-  );
-}
+    try {
+      const response = await fetch("/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email.toLowerCase(),
+          password: formData.password,
+        }),
+      });
 
-function FacultyFields() {
-  return (
-    <div className="space-y-4">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="fac-name">Full Name</Label>
-          <Input id="fac-name" placeholder="Prof. Alex Kumar" className={inputCls} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="fac-id">Employee ID</Label>
-          <Input id="fac-id" placeholder="FAC-101" className={inputCls} />
-        </div>
-      </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="fac-dept">Department</Label>
-          <Select>
-            <SelectTrigger className={inputCls}>
-              <SelectValue placeholder="Select Dept" />
-            </SelectTrigger>
-            <SelectContent>
-              {DEPARTMENTS.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="fac-desig">Designation</Label>
-          <Select>
-            <SelectTrigger className={inputCls}>
-              <SelectValue placeholder="Select" />
-            </SelectTrigger>
-            <SelectContent>
-              {DESIGNATIONS.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-    </div>
-  );
-}
+      const data = await response.json();
 
-/* ──────────────────── Main Component ──────────────────── */
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed");
+      }
 
-export default function Home() {
-  const [activeRole, setActiveRole] = useState("student");
+      setMessage({ type: "success", text: data.message });
 
-  const roleStyles  = {
-    student: { color: "bg-amber-600", label: "Student" },
-    faculty: { color: "bg-teal-600", label: "Faculty" },
+      // Redirect based on role after short delay
+      setTimeout(() => {
+        if (data.role === "student") {
+          router.push("/");
+        } else if (data.role === "faculty") {
+          router.push("/");
+        } else {
+          router.push("/");
+        }
+      }, 1000);
+    } catch (err) {
+      setMessage({ type: "error", text: err.message });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-xl">
+      <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Create Account</h1>
-          <p className="text-slate-500 mt-2">Departmental Resource Hub Registration</p>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
+            Welcome Back
+          </h1>
+          <p className="text-slate-500 mt-2">
+            Sign in to your account
+          </p>
         </div>
 
         <Card className="shadow-xl border-none ring-1 ring-slate-200 bg-white">
-          {/* Role Tabs */}
-          <div className="flex p-1 bg-slate-100/50 border-b">
-            {Object.keys(roleStyles).map((role) => (
-              <button
-                key={role}
-                onClick={() => setActiveRole(role)}
-                className={`flex-1 py-2.5 text-sm font-semibold rounded-md transition-all ${
-                  activeRole === role
-                    ? "bg-white shadow-sm text-slate-900"
-                    : "text-slate-500 hover:text-slate-700"
-                }`}
-              >
-                {roleStyles[role].label}
-              </button>
-            ))}
-          </div>
-
           <CardHeader>
-            <CardTitle className="text-xl">
-              {roleStyles[activeRole].label} Details
-            </CardTitle>
+            <CardTitle className="text-xl">Sign In</CardTitle>
             <CardDescription>
-              Fill in your official information to register.
+              Enter your credentials to access the portal.
             </CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-6">
-            <form className="space-y-6">
-              {activeRole === "student" ? <StudentFields /> : <FacultyFields />}
+            {/* Status Messages */}
+            {message.text && (
+              <div
+                className={`p-4 rounded-xl flex items-start gap-3 text-sm font-semibold border ${
+                  message.type === "success"
+                    ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+                    : "bg-rose-50 text-rose-700 border-rose-100"
+                }`}
+              >
+                {message.type === "success" ? (
+                  <CheckCircle size={20} className="shrink-0" />
+                ) : (
+                  <AlertCircle size={20} className="shrink-0" />
+                )}
+                <span>{message.text}</span>
+              </div>
+            )}
 
-              {/* Shared Contact/Security Fields */}
-              <div className="space-y-4 pt-2 border-t border-slate-100">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" type="email" placeholder="name@college.edu" className={inputCls} />
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="pass">Password</Label>
-                    <Input id="pass" type="password" placeholder="••••••••" className={inputCls} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="cpass">Confirm Password</Label>
-                    <Input id="cpass" type="password" placeholder="••••••••" className={inputCls} />
-                  </div>
-                </div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="name@college.edu"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={inputCls}
+                  required
+                />
               </div>
 
-              <Button 
-                className={`w-full h-12 text-lg font-semibold text-white transition-all ${roleStyles[activeRole].color}`}
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={inputCls}
+                  required
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full h-12 text-lg font-semibold text-white transition-all bg-indigo-600 hover:bg-indigo-700 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Complete Registration
+                {loading ? (
+                  <>
+                    <Loader2 className="animate-spin mr-2" size={20} />
+                    Signing in...
+                  </>
+                ) : (
+                  "Sign In"
+                )}
               </Button>
             </form>
 
             <div className="text-center text-sm text-slate-500">
-              Already have an account?{" "}
-              <Link href="/sign-in" className="font-semibold text-slate-900 hover:underline">
-                Sign in
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/sign-in"
+                className="font-semibold text-slate-900 hover:underline"
+              >
+                Create one
               </Link>
             </div>
           </CardContent>
