@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, useMemo } from "react";
-import { ChevronRight, Folder, FileText, BookOpen, Layers, Home } from "lucide-react";
+import { ChevronRight, Folder, FileText, BookOpen, Layers, Home, UserCircle } from "lucide-react";
 
 export default function App() {
   const [notes, setNotes] = useState({});
@@ -17,7 +17,7 @@ export default function App() {
 
   const fetchNotes = async () => {
     try {
-      // Keeping original API call
+      // Keeping original API call logic
       const res = await fetch("/api/student/notes");
       const data = await res.json();
       setNotes(data.notes || {});
@@ -194,14 +194,23 @@ export default function App() {
               filteredNotes.map((note) => (
                 <div
                   key={note._id}
-                  className="bg-white border border-gray-200 p-5 rounded-xl shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:shadow-md transition-shadow"
+                  className="bg-white border border-gray-200 p-5 rounded-xl shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:shadow-md transition-shadow relative overflow-hidden"
                 >
                   <div className="flex items-start">
                     <div className="bg-gray-50 p-3 rounded-lg mr-4 shrink-0">
                       <FileText className="text-gray-600" size={24} />
                     </div>
                     <div>
-                      <h3 className="font-bold text-gray-900 text-lg leading-tight">{note.title}</h3>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="font-bold text-gray-900 text-lg leading-tight">{note.title}</h3>
+                        {/* STUDENT NOTES CHIP */}
+                        {(note.uploaderRole === "student" || note.uploadedBy?.role === "student") && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-orange-100 text-orange-700 border border-orange-200">
+                            Student Note
+                          </span>
+                        )}
+                      </div>
+                      
                       <div className="flex flex-wrap gap-x-4 mt-1">
                         <p className="text-sm text-gray-500">
                           <span className="font-medium">Subject:</span> {note.subject}
@@ -210,10 +219,13 @@ export default function App() {
                           <span className="font-medium">Unit:</span> {note.unit}
                         </p>
                       </div>
+
                       {note.uploadedBy?.name && (
                         <p className="text-xs text-blue-600 mt-2 flex items-center">
-                          <span className="w-1.5 h-1.5 bg-blue-600 rounded-full mr-1.5"></span>
+                          <UserCircle size={12} className="mr-1" />
                           Uploaded by {note.uploadedBy.name}
+                          <span className="mx-1 opacity-50">•</span>
+                          <span className="capitalize">{note.uploaderRole || note.uploadedBy.role}</span>
                         </p>
                       )}
                     </div>

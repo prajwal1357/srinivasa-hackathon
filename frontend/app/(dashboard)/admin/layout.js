@@ -24,7 +24,7 @@ export default function AdminLayout({ children }) {
   const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
     { name: "Notify Student", path: "/admin/notifi", icon: Bell },
-    { name: "Notice Control", path: "/admin/users", icon: Upload },
+    { name: "Notice Control", path: "/admin/notice", icon: Upload },
     { name: "Analytics", path: "/admin/analytics", icon: LineChart },
     { name: "Verify Faculty", path: "/admin/approvedfac", icon: CheckCircle },
     { name: "Assign Faculty", path: "/admin/assign-faculty", icon: UserCheck },
