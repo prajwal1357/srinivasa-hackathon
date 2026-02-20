@@ -1,8 +1,21 @@
 from fastapi import FastAPI
-from Model.RAG_FILE_MODEL import RAG_FILE_MODEL
-from RAG_MODEL.Embedding import embedd
+from fastapi.middleware.cors import CORSMiddleware
+from Model.RAG_FILE_MODEL import RAG_FILE_MODEL , Retrival_Model
+from RAG_MODEL.Embedding import embedd 
+from RAG_MODEL.Retrival import Retrival
+from Model.RAG_FILE_MODEL import FileReview
+from RAG_MODEL.Project_suggestion import Project_suggestion
+from FileReview import FileReviewForHOD
+
 app = FastAPI() 
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 @app.get("/")
 def init():
@@ -11,3 +24,18 @@ def init():
 @app.post("/Ai/vector")
 def uploadFILE(docs:RAG_FILE_MODEL):
     embedd(docs)
+    
+@app.post("/Ai/Retrival")
+def Retrival_doc(doc:Retrival_Model):
+    res =Retrival(doc)
+    return {"res": res}
+
+@app.post("/Ai/ChatBot")
+def ChatBot(query:str):
+    res = Project_suggestion(query=query)
+    return {"res" :res }
+
+@app.post("/Ai/FileReview")
+def FIleReview(doc:FileReview):
+    res =FileReviewForHOD(doc)
+    return{"res":res }
