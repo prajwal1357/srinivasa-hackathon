@@ -9,6 +9,7 @@ import {
   CheckCircle,
   LogOut,
   MessageCircleCode,
+  NotebookPen,
 } from "lucide-react";
 
 export default function FacultyLayout({ children }) {
@@ -22,6 +23,7 @@ export default function FacultyLayout({ children }) {
     { name: "Upload Notes", path: "/faculty/uploadNotes", icon: Upload },
     { name: "Verify", path: "/faculty/verify", icon: CheckCircle },
     { name: "Send Message", path: "/faculty/sendmsg", icon: MessageCircleCode },
+    { name: "Approve Notes", path: "/faculty/pending-notes", icon: NotebookPen },
   ];
 
   const handleLogout = async () => {

@@ -64,11 +64,11 @@ export async function proxy(request) {
 // 6. Matcher Configuration
 export const config = {
   matcher: [
-    // "/",
-    // "/admin/:path*",
-    // "/faculty/:path*",
-    // "/student/:path*",
-    // "/login",
-    // "/signup",
+    "/",
+    "/admin/:path*",
+    "/faculty/:path*",
+    "/student/:path*",
+    "/login",
+    "/signup",
   ],
 };

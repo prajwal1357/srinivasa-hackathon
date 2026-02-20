@@ -36,7 +36,7 @@ const noteSchema = new mongoose.Schema(
     },
 
     dueDate: {
-      type: Date, // Only required if type === "assignment"
+      type: Date,
     },
 
     fileUrl: {
@@ -45,7 +45,12 @@ const noteSchema = new mongoose.Schema(
     },
 
     fileType: {
-      type: String, // pdf, doc, ppt, png
+      type: String,
+      required: true,
+    },
+
+    publicId: {
+      type: String, // For cloudinary delete later
       required: true,
     },
 
@@ -59,6 +64,27 @@ const noteSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+
+    uploaderRole: {
+      type: String,
+      enum: ["faculty", "student"],
+      required: true,
+    },
+
+    approvalStatus: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "approved", // faculty uploads auto approved
+    },
+
+    approvedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+
+    approvedAt: {
+      type: Date,
     },
 
     isActive: {

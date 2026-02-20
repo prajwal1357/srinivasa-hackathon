@@ -1,6 +1,7 @@
 import { connectDB } from "@/lib/db";
 import cloudinary from "@/lib/cloudinary";
 import Note from "@/models/Note";
+import User from "@/models/User";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { jwtVerify } from "jose";
@@ -9,7 +10,7 @@ export async function POST(req) {
   try {
     await connectDB();
 
-    /* 🔐 Get Faculty from JWT */
+    /* 🔐 Get Student From JWT */
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
 
@@ -22,7 +23,25 @@ export async function POST(req) {
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET);
     const { payload } = await jwtVerify(token, secret);
-    const facultyId = payload.id;
+
+    if (payload.role !== "student") {
+      return NextResponse.json(
+        { message: "Access denied" },
+        { status: 403 }
+      );
+    }
+
+    const studentId = payload.id;
+
+    /* 🔎 Get Student Record */
+    const student = await User.findById(studentId);
+
+    if (!student || !student.class) {
+      return NextResponse.json(
+        { message: "Student class not assigned" },
+        { status: 400 }
+      );
+    }
 
     /* 📦 Get Form Data */
     const formData = await req.formData();
@@ -33,48 +52,27 @@ export async function POST(req) {
     const subject = formData.get("subject");
     const semester = formData.get("semester");
     const unit = formData.get("unit");
-    const type = formData.get("type");
-    const dueDate = formData.get("dueDate");
-    const classId = formData.get("classId");
 
     /* ✅ Validation */
-    if (!file || !title || !subject || !semester || !unit || !type || !classId) {
+    if (!file || !title || !subject || !semester || !unit) {
       return NextResponse.json(
         { message: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    if (type === "assignment" && !dueDate) {
-      return NextResponse.json(
-        { message: "Due date required for assignment" },
-        { status: 400 }
-      );
-    }
-
-    /* 🗂 Convert file to buffer */
+    /* 🗂 Convert file to base64 (Stable Method) */
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
+    const base64File = `data:${file.type};base64,${buffer.toString("base64")}`;
 
     /* ☁ Upload to Cloudinary */
-    /* ☁ Upload to Cloudinary */
-const uploadResponse = await new Promise((resolve, reject) => {
-  cloudinary.uploader.upload_stream(
-    {
-      resource_type: "auto", // Keeps detection automatic
-      folder: "lms_uploads",
-      // Force "attachment" to false if you want it to open in browser
-      flags: "attachment:false", 
-      // This helps browser recognize the file extension in the URL
+    const uploadResponse = await cloudinary.uploader.upload(base64File, {
+      resource_type: "raw",
+      folder: "student_uploads",
       use_filename: true,
       unique_filename: true,
-    },
-    (error, result) => {
-      if (error) reject(error);
-      else resolve(result);
-    }
-  ).end(buffer);
-});
+    });
 
     /* 💾 Save in DB */
     const newNote = await Note.create({
@@ -83,23 +81,28 @@ const uploadResponse = await new Promise((resolve, reject) => {
       subject,
       semester: Number(semester),
       unit: Number(unit),
-      type,
-      uploaderRole: "faculty",
-      dueDate: type === "assignment" ? dueDate : null,
+
+      type: "note", // Students upload only notes
+
       fileUrl: uploadResponse.secure_url,
       publicId: uploadResponse.public_id,
-      fileType: file.type, // Reliable MIME type
-      class: classId,
-      uploadedBy: facultyId,
+      fileType: file.type,
+
+      class: student.class,
+      uploadedBy: studentId,
+      uploaderRole: "student",
+
+      approvalStatus: "pending",
     });
 
     return NextResponse.json({
-      message: "Uploaded successfully",
+      message: "Note uploaded and sent for approval",
       note: newNote,
     });
 
   } catch (error) {
-    console.error("Upload Error:", error);
+    console.error("Student Upload Error:", error);
+
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }
