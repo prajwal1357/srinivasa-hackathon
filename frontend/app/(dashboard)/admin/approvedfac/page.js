@@ -36,24 +36,26 @@ export default function FacultyManagementPage() {
       body: JSON.stringify({ userId: id }),
     });
 
-    // After action, refresh pending list
     fetchFaculty("pending");
   };
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Faculty Management</h1>
+    <div className="p-8 min-h-screen bg-gray-900 text-white">
+      {/* Page Title */}
+      <h1 className="text-3xl font-bold text-blue-500 mb-8">
+        Faculty Management
+      </h1>
 
       {/* Tabs */}
-      <div className="flex gap-4 mb-6">
+      <div className="flex gap-4 mb-8">
         {["pending", "approved", "rejected"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded capitalize ${
+            className={`px-5 py-2 rounded-lg capitalize font-medium transition ${
               activeTab === tab
-                ? "bg-black text-white"
-                : "bg-gray-200"
+                ? "bg-blue-600 text-white shadow-lg"
+                : "bg-gray-800 text-gray-400 hover:bg-gray-700"
             }`}
           >
             {tab}
@@ -63,33 +65,47 @@ export default function FacultyManagementPage() {
 
       {/* Content */}
       {loading ? (
-        <p>Loading...</p>
+        <div className="text-gray-400 animate-pulse">
+          Loading faculty data...
+        </div>
       ) : facultyList.length === 0 ? (
-        <p>No {activeTab} faculty found.</p>
+        <div className="bg-gray-800 border border-gray-700 p-6 rounded-xl">
+          No {activeTab} faculty found.
+        </div>
       ) : (
-        <div className="space-y-4">
+        <div className="grid md:grid-cols-2 gap-6">
           {facultyList.map((faculty) => (
             <div
               key={faculty._id}
-              className="border p-4 rounded flex justify-between items-center"
+              className="bg-gray-800 border border-gray-700 
+                         rounded-xl p-6 shadow-md 
+                         hover:border-blue-500 transition duration-300"
             >
               <div>
-                <p className="font-semibold">{faculty.name}</p>
-                <p className="text-sm text-gray-500">{faculty.email}</p>
+                <p className="text-lg font-semibold">
+                  {faculty.name}
+                </p>
+                <p className="text-sm text-gray-400 mt-1">
+                  {faculty.email}
+                </p>
               </div>
 
               {/* Buttons only in Pending */}
               {activeTab === "pending" && (
-                <div className="flex gap-3">
+                <div className="flex gap-3 mt-6">
                   <button
-                    onClick={() => handleAction(faculty._id, "approve")}
-                    className="px-4 py-2 bg-green-600 text-white rounded"
+                    onClick={() =>
+                      handleAction(faculty._id, "approve")
+                    }
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                   >
                     Approve
                   </button>
                   <button
-                    onClick={() => handleAction(faculty._id, "reject")}
-                    className="px-4 py-2 bg-red-600 text-white rounded"
+                    onClick={() =>
+                      handleAction(faculty._id, "reject")
+                    }
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
                   >
                     Reject
                   </button>
