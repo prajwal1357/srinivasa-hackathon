@@ -1,11 +1,166 @@
-import React from 'react'
+import { useEffect, useState } from "react";
 
-const UploadNotesPage = () => {
+export default function UploadNotesPage() {
+  const [classes, setClasses] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    subject: "",
+    semester: "",
+    unit: "",
+    type: "note",
+    dueDate: "",
+    classId: "",
+    file: null,
+  });
+
+  useEffect(() => {
+    fetchClasses();
+  }, []);
+
+  const fetchClasses = async () => {
+    const res = await fetch("/api/admin/classes");
+    const data = await res.json();
+    setClasses(data.classes || []);
+  };
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+
+    if (name === "file") {
+      setFormData((prev) => ({ ...prev, file: files[0] }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const form = new FormData();
+    Object.keys(formData).forEach((key) => {
+      if (formData[key]) {
+        form.append(key, formData[key]);
+      }
+    });
+
+    // ⚠ Replace with real faculty id from JWT later
+    form.append("facultyId", "YOUR_FACULTY_ID");
+
+    const res = await fetch("/api/faculty/upload-note", {
+      method: "POST",
+      body: form,
+    });
+
+    const data = await res.json();
+    alert(data.message);
+
+    setLoading(false);
+  };
+
   return (
-    <div>
-        Upload Notes
-    </div>
-  )
-}
+    <div className="p-8 max-w-2xl">
+      <h1 className="text-2xl font-bold mb-6">
+        Upload Notes / Assignment
+      </h1>
 
-export default UploadNotesPage
+      <form onSubmit={handleSubmit} className="space-y-4">
+
+        <input
+          name="title"
+          placeholder="Title"
+          required
+          onChange={handleChange}
+          className="w-full border p-2 rounded"
+        />
+
+        <textarea
+          name="description"
+          placeholder="Description"
+          onChange={handleChange}
+          className="w-full border p-2 rounded"
+        />
+
+        <input
+          name="subject"
+          placeholder="Subject"
+          required
+          onChange={handleChange}
+          className="w-full border p-2 rounded"
+        />
+
+        <div className="flex gap-4">
+          <input
+            type="number"
+            name="semester"
+            placeholder="Semester"
+            required
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+
+          <input
+            type="number"
+            name="unit"
+            placeholder="Unit"
+            required
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+
+        <select
+          name="type"
+          onChange={handleChange}
+          className="w-full border p-2 rounded"
+        >
+          <option value="note">Note</option>
+          <option value="assignment">Assignment</option>
+        </select>
+
+        {formData.type === "assignment" && (
+          <input
+            type="date"
+            name="dueDate"
+            required
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+        )}
+
+        <select
+          name="classId"
+          required
+          onChange={handleChange}
+          className="w-full border p-2 rounded"
+        >
+          <option value="">Select Class</option>
+          {classes.map((cls) => (
+            <option key={cls._id} value={cls._id}>
+              {cls.name}
+            </option>
+          ))}
+        </select>
+
+        <input
+          type="file"
+          name="file"
+          required
+          onChange={handleChange}
+          className="w-full"
+        />
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-black text-white px-4 py-2 rounded"
+        >
+          {loading ? "Uploading..." : "Upload"}
+        </button>
+      </form>
+    </div>
+  );
+}
