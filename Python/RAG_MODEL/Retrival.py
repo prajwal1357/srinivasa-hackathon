@@ -9,12 +9,12 @@ from Model.RAG_FILE_MODEL import Retrival_Model
 load_dotenv()
 
 HF_TOKEN=os.getenv("HF_TOKEN")
-
+HF_API_END_POINT=os.getenv("HF_API_END_POINT")
 
 def Retrival(doc:Retrival_Model):
     try: 
         client = OpenAI(
-        base_url="https://router.huggingface.co/v1",
+        base_url=HF_API_END_POINT,
         api_key=os.getenv("HF_TOKEN"),
           )
 
