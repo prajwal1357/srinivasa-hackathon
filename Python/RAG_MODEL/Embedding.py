@@ -6,8 +6,6 @@ from langchain_community.document_loaders import PyPDFLoader
 from pathlib import Path 
 from dotenv import load_dotenv
 import os 
-import requests
-import tempfile
 from fastapi import HTTPException , status
 from Model.RAG_FILE_MODEL import RAG_FILE_MODEL
 load_dotenv() 
@@ -18,7 +16,6 @@ Qdrant_API_KEY = os.getenv("Qdrant_API_KEY") or ""
 
 def embedd(doc:RAG_FILE_MODEL):
     try: 
-         
         pdf_path = Path(__file__).parent / "PY1.pdf"
         print("YES! Got the Path of the PDF")
 

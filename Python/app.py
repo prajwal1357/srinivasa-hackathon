@@ -2,7 +2,9 @@ from fastapi import FastAPI
 from Model.RAG_FILE_MODEL import RAG_FILE_MODEL , Retrival_Model
 from RAG_MODEL.Embedding import embedd 
 from RAG_MODEL.Retrival import Retrival
+from Model.RAG_FILE_MODEL import FileReview
 from RAG_MODEL.Project_suggestion import Project_suggestion
+from FileReview import FileReviewForHOD
 app = FastAPI() 
 
 
@@ -25,5 +27,5 @@ def ChatBot(query:str):
     return {"res" :res }
 
 @app.post("/Ai/FileReview")
-def FIleReview(doc):
-    pass
+def FIleReview(doc:FileReview):
+    FileReviewForHOD(doc)

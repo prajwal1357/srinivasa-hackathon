@@ -12,3 +12,4 @@ class Retrival_Model(BaseModel):
 class FileReview(BaseModel):
     doc_name:str
     doc_valid:bool
+    doc_link:str 
