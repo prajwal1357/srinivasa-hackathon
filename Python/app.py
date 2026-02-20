@@ -1,12 +1,21 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from Model.RAG_FILE_MODEL import RAG_FILE_MODEL , Retrival_Model
 from RAG_MODEL.Embedding import embedd 
 from RAG_MODEL.Retrival import Retrival
 from Model.RAG_FILE_MODEL import FileReview
 from RAG_MODEL.Project_suggestion import Project_suggestion
 from FileReview import FileReviewForHOD
+
 app = FastAPI() 
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 @app.get("/")
 def init():
@@ -28,4 +37,5 @@ def ChatBot(query:str):
 
 @app.post("/Ai/FileReview")
 def FIleReview(doc:FileReview):
-    FileReviewForHOD(doc)
+    res =FileReviewForHOD(doc)
+    return{"res":res }

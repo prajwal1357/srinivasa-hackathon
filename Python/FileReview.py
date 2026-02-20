@@ -6,6 +6,7 @@ from langchain_community.document_loaders import PyPDFLoader
 from pathlib import Path 
 from dotenv import load_dotenv
 import os 
+import json
 from fastapi import HTTPException , status
 from Model.RAG_FILE_MODEL import RAG_FILE_MODEL
 from Model.RAG_FILE_MODEL import FileReview
@@ -27,8 +28,9 @@ def FileReviewForHOD(doc:FileReview):
         print(os.getcwd())
         #Path
         BASE_DIR = Path(__file__).resolve().parent
-        pdf_path = BASE_DIR / "FILES" / doc.doc_name
+        pdf_path = BASE_DIR / "FILES" / f"{doc.doc_name}.pdf"
         
+        print(f"Base Path : {pdf_path}")
         print("YES! Got the Path of the PDF")
 
         PDFLoader = PyPDFLoader(pdf_path)
@@ -40,6 +42,7 @@ def FileReviewForHOD(doc:FileReview):
         chunk_size=1000,
         chunk_overlap=400 
         )
+        
         Chunks = Text_Splitter.split_documents(docs)
         print("YES! Done Creating Chunks")
 
@@ -48,10 +51,11 @@ def FileReviewForHOD(doc:FileReview):
             api_key=os.getenv("HF_TOKEN"),
         )
         
+        context_text = "\n".join([doc.page_content for doc in Chunks])
         
         query = f"""
             DOCUMENT:
-            {Chunks}
+            {context_text}
 
             You are an academic AI reviewer.
 
@@ -81,23 +85,26 @@ def FileReviewForHOD(doc:FileReview):
             - Do NOT add explanations outside the JSON object.
 
             RESPONSE FORMAT:
-            {
+            {{
                 "NOTES_REVIEW": "Three concise lines of academic feedback here.",
                 "Points_out_of_10": 0
-            }
+            }}
             """    
 
         completion = client.chat.completions.create(
             model="Qwen/Qwen2.5-7B-Instruct:together",
             messages=[
-                {"role":"Reviwer" , "content":query},
+                {"role":"user" , "content":query},
             ],
       
         )
     
         message = completion.choices[0].message
-        print("*****************DONE************************  \n",message.content)   
-        return message.content      
+        print("*****************DONE************************  \n")
+        result = json.loads(message.content)
+        print("Type:", type(result))
+        print("Value:", result)   
+        return result      
                                      
     except Exception as e : 
         print(e)
