@@ -9,6 +9,8 @@ import os
 from fastapi import HTTPException , status
 from Model.RAG_FILE_MODEL import RAG_FILE_MODEL
 load_dotenv() 
+
+
 QDRANT_CLUSTER_END_POINT = os.getenv("QDRANT_CLUSTER_END_POINT") or "http://localhost:6333"
 Qdrant_API_KEY = os.getenv("Qdrant_API_KEY") or ""
 
