@@ -2,7 +2,8 @@
 import React, { useState } from "react";
 import { 
   LayoutDashboard, Upload, List, LogOut, Moon, Sun, 
-  GraduationCap, Menu, X 
+  GraduationCap, Menu, X, 
+  Fullscreen
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -17,6 +18,7 @@ export default function Sidebar() {
     { name: "Dashboard", path: "/student/dashboard", icon: LayoutDashboard },
     { name: "Upload notes", path: "/student/uploadNotes", icon: Upload },
     { name: "View notes", path: "/student/viewNotes", icon: List },
+    { name: "Events", path: "/student/events", icon: Fullscreen},
   ];
 
   const handlelogout = async () => {

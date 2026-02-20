@@ -11,6 +11,7 @@ import {
   MessageCircleCode,
   NotebookPen,
   Zap,
+  ZapIcon,
 
 } from "lucide-react";
 
@@ -25,6 +26,7 @@ export default function FacultyLayout({ children }) {
     { name: "Verify", path: "/faculty/verify", icon: CheckCircle },
     { name: "Send Message", path: "/faculty/sendmsg", icon: MessageCircleCode },
     { name: "Approve Notes", path: "/faculty/pending-notes", icon: NotebookPen },
+    { name: "Create Event", path: "/faculty/createEvent", icon: ZapIcon },
   ];
 
   const handleLogout = async () => {
