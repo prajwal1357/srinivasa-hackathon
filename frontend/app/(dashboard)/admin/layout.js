@@ -8,6 +8,7 @@ import {
   Upload,
   LogOut,
   ChartLine,
+  CheckCircleIcon,
 } from "lucide-react";
 
 export default function AdminLayout({ children }) {
@@ -18,6 +19,7 @@ export default function AdminLayout({ children }) {
     { name: "Notify Student", path: "/admin/notifi", icon: Bell },
     { name: "Users", path: "/admin/users", icon: Upload },
     { name: "Analytics", path: "/admin/analytics", icon: ChartLine },
+    { name: "Verify Faculty", path: "/admin/approvedfac", icon: CheckCircleIcon },
   ];
 
   return (
