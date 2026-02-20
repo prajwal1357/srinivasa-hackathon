@@ -65,7 +65,6 @@ export default function UploadNotesPage() {
 
       alert("Uploaded successfully ✅");
 
-      // Reset form
       setFormData({
         title: "",
         description: "",
@@ -85,112 +84,162 @@ export default function UploadNotesPage() {
     setLoading(false);
   };
 
+  // Helper for consistent input styles
+  const inputStyle = "w-full border-4 border-black p-3 font-bold placeholder:text-gray-500 focus:bg-[#FFFBEB] outline-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none";
+
   return (
-    <div className="p-8 max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6">
-        Upload Notes / Assignment
-      </h1>
+    <div className="max-w-3xl">
+      {/* Title with yellow background highlight */}
+      <div className="inline-block mb-10">
+        <h1 className="text-3xl font-black uppercase tracking-tighter border-4 border-black bg-[#FFDE03] px-6 py-2 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+          Upload Content
+        </h1>
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-8">
+        
+        {/* Basic Info Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-xs font-black uppercase tracking-widest">Document Title</label>
+            <input
+              name="title"
+              placeholder="e.g. Quantum Physics Basics"
+              required
+              value={formData.title}
+              onChange={handleChange}
+              className={inputStyle}
+            />
+          </div>
 
-        <input
-          name="title"
-          placeholder="Title"
-          required
-          value={formData.title}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        />
+          <div className="space-y-2">
+            <label className="text-xs font-black uppercase tracking-widest">Subject</label>
+            <input
+              name="subject"
+              placeholder="e.g. Physics-II"
+              required
+              value={formData.subject}
+              onChange={handleChange}
+              className={inputStyle}
+            />
+          </div>
+        </div>
 
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={formData.description}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        />
-
-        <input
-          name="subject"
-          placeholder="Subject"
-          required
-          value={formData.subject}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        />
-
-        <div className="flex gap-4">
-          <input
-            type="number"
-            name="semester"
-            placeholder="Semester"
-            required
-            value={formData.semester}
+        <div className="space-y-2">
+          <label className="text-xs font-black uppercase tracking-widest">Description</label>
+          <textarea
+            name="description"
+            placeholder="What is this document about?"
+            rows="3"
+            value={formData.description}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
-
-          <input
-            type="number"
-            name="unit"
-            placeholder="Unit"
-            required
-            value={formData.unit}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className={inputStyle}
           />
         </div>
 
-        <select
-          name="type"
-          value={formData.type}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        >
-          <option value="note">Note</option>
-          <option value="assignment">Assignment</option>
-        </select>
+        {/* Semester & Unit Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="space-y-2">
+            <label className="text-xs font-black uppercase tracking-widest">Semester</label>
+            <input
+              type="number"
+              name="semester"
+              placeholder="1-8"
+              required
+              value={formData.semester}
+              onChange={handleChange}
+              className={inputStyle}
+            />
+          </div>
 
-        {formData.type === "assignment" && (
+          <div className="space-y-2">
+            <label className="text-xs font-black uppercase tracking-widest">Unit</label>
+            <input
+              type="number"
+              name="unit"
+              placeholder="1-5"
+              required
+              value={formData.unit}
+              onChange={handleChange}
+              className={inputStyle}
+            />
+          </div>
+
+          <div className="space-y-2 col-span-2">
+            <label className="text-xs font-black uppercase tracking-widest">Content Type</label>
+            <select
+              name="type"
+              value={formData.type}
+              onChange={handleChange}
+              className={`${inputStyle} appearance-none bg-white`}
+            >
+              <option value="note">📚 Study Note</option>
+              <option value="assignment">📝 Assignment</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Conditional Due Date & Class Selection */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {formData.type === "assignment" && (
+            <div className="space-y-2">
+              <label className="text-xs font-black uppercase tracking-widest text-[#FF5C5C]">Due Date</label>
+              <input
+                type="date"
+                name="dueDate"
+                required
+                value={formData.dueDate}
+                onChange={handleChange}
+                className={`${inputStyle} bg-[#FFECEC]`}
+              />
+            </div>
+          )}
+
+          <div className="space-y-2">
+            <label className="text-xs font-black uppercase tracking-widest">Target Class</label>
+            <select
+              name="classId"
+              required
+              value={formData.classId}
+              onChange={handleChange}
+              className={`${inputStyle} appearance-none bg-white`}
+            >
+              <option value="">Choose Class...</option>
+              {classes.map((cls) => (
+                <option key={cls._id} value={cls._id}>
+                  {cls.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* File Upload Box */}
+        <div className="border-4 border-dashed border-black p-8 bg-[#F0FDF4] text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-[#DCFCE7] transition-colors relative">
           <input
-            type="date"
-            name="dueDate"
+            type="file"
+            name="file"
             required
-            value={formData.dueDate}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           />
-        )}
+          <div className="pointer-events-none">
+            <p className="text-lg font-black uppercase">
+              {formData.file ? `📎 ${formData.file.name}` : "Click to select or drag file"}
+            </p>
+            <p className="text-xs font-bold mt-2 opacity-60">PDF, DOCX, or Images accepted</p>
+          </div>
+        </div>
 
-        <select
-          name="classId"
-          required
-          value={formData.classId}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        >
-          <option value="">Select Class</option>
-          {classes.map((cls) => (
-            <option key={cls._id} value={cls._id}>
-              {cls.name}
-            </option>
-          ))}
-        </select>
-
-        <input
-          type="file"
-          name="file"
-          required
-          onChange={handleChange}
-          className="w-full"
-        />
-
+        {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}
-          className="bg-black text-white px-4 py-2 rounded"
+          className={`w-full md:w-auto px-10 py-4 border-4 border-black font-black uppercase tracking-wider shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all active:shadow-none active:translate-x-1 active:translate-y-1 ${
+            loading ? "bg-gray-400" : "bg-[#01FFFF] hover:bg-[#00e5e5]"
+          }`}
         >
-          {loading ? "Uploading..." : "Upload"}
+          {loading ? "Processing..." : "Submit to Class +"}
         </button>
       </form>
     </div>

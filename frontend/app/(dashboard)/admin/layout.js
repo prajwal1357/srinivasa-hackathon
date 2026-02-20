@@ -105,10 +105,7 @@ export default function AdminLayout({ children }) {
         {/* Main Content */}
         <main className="flex-1 p-8 overflow-y-auto relative">
           
-          {/* Floating Action Button (Matches the yellow '+' in ref) */}
-          <button className="fixed bottom-8 right-8 w-16 h-16 bg-[#FFD600] border-4 border-black rounded-full shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center hover:-translate-y-1 active:translate-y-1 transition-all z-50">
-             <Plus size={32} strokeWidth={3} color="black" />
-          </button>
+         
 
           <div className="max-w-6xl mx-auto">
             <div className="min-h-[85vh] bg-white dark:bg-gray-900 border-4 border-black rounded-3xl shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-10">
