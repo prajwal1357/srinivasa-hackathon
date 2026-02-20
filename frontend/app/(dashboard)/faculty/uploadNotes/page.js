@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 
 export default function UploadNotesPage() {
@@ -21,9 +22,13 @@ export default function UploadNotesPage() {
   }, []);
 
   const fetchClasses = async () => {
-    const res = await fetch("/api/admin/classes");
-    const data = await res.json();
-    setClasses(data.classes || []);
+    try {
+      const res = await fetch("/api/admin/classes");
+      const data = await res.json();
+      setClasses(data.classes || []);
+    } catch (error) {
+      console.error("Error fetching classes:", error);
+    }
   };
 
   const handleChange = (e) => {
@@ -40,23 +45,42 @@ export default function UploadNotesPage() {
     e.preventDefault();
     setLoading(true);
 
-    const form = new FormData();
-    Object.keys(formData).forEach((key) => {
-      if (formData[key]) {
-        form.append(key, formData[key]);
+    try {
+      const form = new FormData();
+
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value) form.append(key, value);
+      });
+
+      const res = await fetch("/api/faculty/upload-note", {
+        method: "POST",
+        body: form,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Upload failed");
       }
-    });
 
-    // ⚠ Replace with real faculty id from JWT later
-    form.append("facultyId", "YOUR_FACULTY_ID");
+      alert("Uploaded successfully ✅");
 
-    const res = await fetch("/api/faculty/upload-note", {
-      method: "POST",
-      body: form,
-    });
+      // Reset form
+      setFormData({
+        title: "",
+        description: "",
+        subject: "",
+        semester: "",
+        unit: "",
+        type: "note",
+        dueDate: "",
+        classId: "",
+        file: null,
+      });
 
-    const data = await res.json();
-    alert(data.message);
+    } catch (error) {
+      alert(error.message);
+    }
 
     setLoading(false);
   };
@@ -73,6 +97,7 @@ export default function UploadNotesPage() {
           name="title"
           placeholder="Title"
           required
+          value={formData.title}
           onChange={handleChange}
           className="w-full border p-2 rounded"
         />
@@ -80,6 +105,7 @@ export default function UploadNotesPage() {
         <textarea
           name="description"
           placeholder="Description"
+          value={formData.description}
           onChange={handleChange}
           className="w-full border p-2 rounded"
         />
@@ -88,6 +114,7 @@ export default function UploadNotesPage() {
           name="subject"
           placeholder="Subject"
           required
+          value={formData.subject}
           onChange={handleChange}
           className="w-full border p-2 rounded"
         />
@@ -98,6 +125,7 @@ export default function UploadNotesPage() {
             name="semester"
             placeholder="Semester"
             required
+            value={formData.semester}
             onChange={handleChange}
             className="w-full border p-2 rounded"
           />
@@ -107,6 +135,7 @@ export default function UploadNotesPage() {
             name="unit"
             placeholder="Unit"
             required
+            value={formData.unit}
             onChange={handleChange}
             className="w-full border p-2 rounded"
           />
@@ -114,6 +143,7 @@ export default function UploadNotesPage() {
 
         <select
           name="type"
+          value={formData.type}
           onChange={handleChange}
           className="w-full border p-2 rounded"
         >
@@ -126,6 +156,7 @@ export default function UploadNotesPage() {
             type="date"
             name="dueDate"
             required
+            value={formData.dueDate}
             onChange={handleChange}
             className="w-full border p-2 rounded"
           />
@@ -134,6 +165,7 @@ export default function UploadNotesPage() {
         <select
           name="classId"
           required
+          value={formData.classId}
           onChange={handleChange}
           className="w-full border p-2 rounded"
         >
