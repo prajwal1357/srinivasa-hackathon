@@ -7,6 +7,7 @@ from langchain_qdrant import QdrantVectorStore
 from openai import OpenAI
 from Model.RAG_FILE_MODEL import Retrival_Model
 load_dotenv()
+
 HF_TOKEN=os.getenv("HF_TOKEN")
 
 
