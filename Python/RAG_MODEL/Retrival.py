@@ -16,7 +16,7 @@ def Retrival(doc:Retrival_Model):
         client = OpenAI(
         base_url=HF_API_END_POINT,
         api_key=os.getenv("HF_TOKEN"),
-          )
+    )
 
         embeddinng_model= OllamaEmbeddings(
             model="nomic-embed-text",
@@ -40,34 +40,21 @@ def Retrival(doc:Retrival_Model):
             f"Source: {doc.doc_name}"
             for result in search_result
         ]
-
+       
         SYS_PROMPT = f"""
+        CONTEXT: {context}
          You are an AI learning assistant designed to help students prepare for exams.
 
-                Your task:
-                - You will receive a CONTEXT extracted from study materials.
-                - You must carefully read the CONTEXT before answering.
-                - Answer the user's question strictly based on the provided CONTEXT.
+        Your task:
+        - You will receive a CONTEXT extracted from study materials.
+        - You must carefully read the CONTEXT before answering.
+        - Answer the user's question strictly based on the provided CONTEXT.
+        - And Answer should be more than 20 lines (you will get more context from that get the answre  for the user query)
 
-                Rules:
-                1. If the answer is clearly available in the CONTEXT, provide a clear, structured, and easy-to-understand explanation.
-                2. If the CONTEXT does not contain enough information to answer the question, respond with:
-                "The provided context does not contain enough information to answer this question."
-                3. Do NOT make up information.
-                4. Do NOT use outside knowledge.
-                5. If the user asks something unrelated to studies or the provided context, respond with:
-                   "I am here to help you with your studies."
-
-                Response Guidelines:
-                - Keep answers clear and student-friendly.
-                - Use simple language.
-                - If appropriate, explain in short paragraphs.
-                - Avoid unnecessary details.
-
-                CONTEXT:
-             {context}
-            """
-
+      
+             
+        """
+        # print(f"{SYS_PROMPT}")
         def AiAgentReply(query:str):
             print(f"the query users sent is : {query}")
             completion = client.chat.completions.create(
@@ -84,7 +71,7 @@ def Retrival(doc:Retrival_Model):
 
         result = AiAgentReply(user_query)
         print(result)
-        return {"res": result}
+        return {"res": result.content}
     except Exception as e : 
          raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,

@@ -8,3 +8,7 @@ class RAG_FILE_MODEL(BaseModel):
 class Retrival_Model(BaseModel):
     doc_name: str 
     user_query: str 
+    
+class FileReview(BaseModel):
+    doc_name:str
+    doc_valid:bool
