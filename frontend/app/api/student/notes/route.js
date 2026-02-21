@@ -33,8 +33,11 @@ export async function GET() {
       );
     }
 
-    /* 📘 Fetch Notes for Student's Class */
-    const notes = await Note.find({ class: student.class })
+    /* 📘 Fetch Only Approved Notes for Student's Class */
+    const notes = await Note.find({
+      class: student.class,
+      approvalStatus: "approved",
+    })
       .populate("uploadedBy", "name")
       .sort({ semester: 1 });
 
