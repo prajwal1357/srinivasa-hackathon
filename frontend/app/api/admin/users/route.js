@@ -2,6 +2,7 @@ import { connectDB } from "@/lib/db";
 import User from "@/models/User";
 import ClassFaculty from "@/models/ClassFaculty";
 import { NextResponse } from "next/server";
+import sendEmail, { approvalEmailTemplate } from "@/lib/email";
 
 // GET — List all users
 export async function GET(req) {
@@ -82,6 +83,16 @@ export async function PUT(req) {
     const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true })
       .select("-password")
       .populate("class", "name");
+
+    // Send approval email if status changed to approved
+    if (status === "approved" && user.status !== "approved") {
+      try {
+        const { subject, html, text } = approvalEmailTemplate(updatedUser.name, updatedUser.role);
+        await sendEmail({ to: updatedUser.email, subject, html, text });
+      } catch (emailErr) {
+        console.error("Approval email failed (non-blocking):", emailErr.message);
+      }
+    }
 
     return NextResponse.json({
       message: `User updated successfully`,

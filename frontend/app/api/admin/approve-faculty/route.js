@@ -1,6 +1,7 @@
 import { connectDB } from "@/lib/db";
 import User from "@/models/User";
 import mongoose from "mongoose";
+import sendEmail, { approvalEmailTemplate } from "@/lib/email";
 
 export async function PATCH(req) {
   try {
@@ -40,6 +41,14 @@ export async function PATCH(req) {
 
     faculty.status = "approved";
     await faculty.save();
+
+    // Send approval email
+    try {
+      const { subject, html, text } = approvalEmailTemplate(faculty.name, "faculty");
+      await sendEmail({ to: faculty.email, subject, html, text });
+    } catch (emailErr) {
+      console.error("Approval email failed (non-blocking):", emailErr.message);
+    }
 
     return Response.json({
       message: "Faculty approved successfully",

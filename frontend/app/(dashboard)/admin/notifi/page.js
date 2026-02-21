@@ -1,162 +1,299 @@
 "use client";
 
-import { useState } from "react";
-import { Upload, Send, AlertCircle, Megaphone, Paperclip } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  Send,
+  Megaphone,
+  Loader2,
+  Users,
+  UserCheck,
+  GraduationCap,
+  Search,
+  Check,
+  X,
+  Mail,
+} from "lucide-react";
+import { toast } from "sonner";
 
 export default function AdminNotification() {
   const [title, setTitle] = useState("");
-  const [message, setMessage] = useState("");
-  const [file, setFile] = useState(null);
-  const [accept, setAccept] = useState(false);
+  const [body, setBody] = useState("");
+  const [recipientType, setRecipientType] = useState("all_students");
+  const [users, setUsers] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [userSearch, setUserSearch] = useState("");
+  const [sending, setSending] = useState(false);
+  const [loadingUsers, setLoadingUsers] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!accept) {
-      // In a real environment we'd use a custom modal, 
-      // but keeping logic consistent with your request.
-      return;
+  // Fetch users when "selected" mode is chosen
+  useEffect(() => {
+    if (recipientType === "selected") {
+      fetchUsers();
     }
-    console.log({ title, message, file });
-    setTitle("");
-    setMessage("");
-    setFile(null);
-    setAccept(false);
+  }, [recipientType]);
+
+  const fetchUsers = async () => {
+    setLoadingUsers(true);
+    try {
+      const res = await fetch("/api/admin/users");
+      const data = await res.json();
+      setUsers((data.users || []).filter((u) => u.role !== "admin"));
+    } catch (err) {
+      toast.error("Failed to load users");
+    } finally {
+      setLoadingUsers(false);
+    }
   };
 
+  const toggleUser = (userId) => {
+    setSelectedUsers((prev) =>
+      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
+    );
+  };
+
+  const selectAllFiltered = () => {
+    const filtered = filteredUsers.map((u) => u._id);
+    setSelectedUsers((prev) => {
+      const newSet = new Set([...prev, ...filtered]);
+      return Array.from(newSet);
+    });
+  };
+
+  const clearSelection = () => setSelectedUsers([]);
+
+  const handleSend = async (e) => {
+    e.preventDefault();
+
+    if (!title.trim() || !body.trim()) {
+      toast.warning("Please fill in both title and body");
+      return;
+    }
+
+    if (recipientType === "selected" && selectedUsers.length === 0) {
+      toast.warning("Please select at least one recipient");
+      return;
+    }
+
+    setSending(true);
+    try {
+      const res = await fetch("/api/admin/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: title.trim(),
+          body: body.trim(),
+          recipientType,
+          recipientIds: recipientType === "selected" ? selectedUsers : undefined,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success(data.message);
+        setTitle("");
+        setBody("");
+        setSelectedUsers([]);
+      } else {
+        toast.error(data.message || "Failed to send email");
+      }
+    } catch (err) {
+      toast.error("Failed to connect to server");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const filteredUsers = users.filter(
+    (u) =>
+      u.name.toLowerCase().includes(userSearch.toLowerCase()) ||
+      u.email.toLowerCase().includes(userSearch.toLowerCase())
+  );
+
+  const recipientOptions = [
+    { value: "all_students", label: "All Students", icon: GraduationCap, color: "bg-[#FF71CE]" },
+    { value: "all_faculty", label: "All Faculty", icon: UserCheck, color: "bg-[#01FFFF]" },
+    { value: "all", label: "Everyone", icon: Users, color: "bg-[#FFD600]" },
+    { value: "selected", label: "Select Recipients", icon: Mail, color: "bg-[#05FFA1]" },
+  ];
+
   return (
-    <div className="max-w-4xl mx-auto space-y-12 font-mono animate-in fade-in slide-in-from-bottom-6 duration-700">
-      
-      {/* 📣 PAGE HEADER - Constructivist Style */}
+    <div className="max-w-4xl mx-auto space-y-10 font-mono animate-in fade-in duration-500">
+
+      {/* Header */}
       <div className="relative overflow-hidden bg-[#FF8A5B] border-4 border-black p-8 rounded-[2rem] shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
-        {/* Decorative Tape Sticker */}
-        <div className="absolute -top-1 -right-4 w-32 h-10 bg-[#FFD600] border-2 border-black rotate-12 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center font-black text-[10px] uppercase z-20">
-          Broadcast Mode
+        <div className="absolute -top-1 -right-4 w-32 h-10 bg-[#FFD600] border-2 border-black rotate-12 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center font-black text-[10px] uppercase z-20 hidden md:flex">
+          Email Mode
         </div>
-        
         <div className="flex items-center gap-6 relative z-10">
           <div className="bg-[#1E293B] p-4 border-4 border-black shadow-[6px_6px_0px_0px_rgba(255,214,0,1)] -rotate-3">
             <Megaphone size={40} className="text-white" strokeWidth={2.5} />
           </div>
           <div>
-            <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-black leading-none">
-              Digital Notice Board
+            <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none">
+              Send Email
             </h1>
-            <p className="font-black text-black uppercase text-xs mt-2 tracking-widest bg-white/40 inline-block px-2 border border-black">
-              Official University Dispatch
+            <p className="font-black uppercase text-xs mt-2 tracking-widest bg-white/40 inline-block px-2 border border-black">
+              Admin Email Notifications
             </p>
           </div>
         </div>
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white border-4 border-black p-10 rounded-[2.5rem] shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] space-y-10"
-      >
-        {/* Title Input */}
-        <div className="space-y-3 group">
-          <div className="flex items-center gap-2">
-            <span className="inline-block bg-[#1E293B] text-white px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              Subject Line
-            </span>
-          </div>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            className="w-full p-5 border-4 border-black rounded-2xl focus:outline-none focus:bg-[#FEF9C3] font-black text-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-none focus:translate-x-1 focus:translate-y-1 transition-all placeholder:text-black/30"
-            placeholder="e.g., URGENT: END SEMESTER SCHEDULE"
-          />
-        </div>
+      <form onSubmit={handleSend} className="space-y-8">
 
-        {/* Message Textarea */}
-        <div className="space-y-3 group">
-          <span className="inline-block bg-[#1E293B] text-white px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            Detailed Content
+        {/* Recipient Selection */}
+        <div className="bg-white border-4 border-black p-8 rounded-3xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+          <span className="inline-block bg-[#1E293B] text-white px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-6">
+            Step 1 — Select Recipients
           </span>
-          <textarea
-            rows="6"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            required
-            className="w-full p-5 border-4 border-black rounded-3xl focus:outline-none focus:bg-[#DBEAFE] font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-none focus:translate-x-1 focus:translate-y-1 transition-all"
-            placeholder="Draft your announcement here..."
-          />
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {recipientOptions.map((opt) => {
+              const Icon = opt.icon;
+              const isActive = recipientType === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setRecipientType(opt.value)}
+                  className={`p-4 border-4 border-black rounded-2xl font-black text-xs uppercase text-center transition-all
+                    ${isActive
+                      ? `${opt.color} shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] -translate-y-1`
+                      : "bg-white hover:bg-gray-50 hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                    }`}
+                >
+                  <Icon size={24} strokeWidth={3} className="mx-auto mb-2" />
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Individual User Selection */}
+          {recipientType === "selected" && (
+            <div className="mt-6 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="relative flex-1">
+                  <Search size={16} strokeWidth={3} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="SEARCH USERS..."
+                    value={userSearch}
+                    onChange={(e) => setUserSearch(e.target.value)}
+                    className="w-full pl-11 pr-4 py-3 border-4 border-black rounded-xl font-bold text-xs uppercase outline-none focus:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-shadow"
+                  />
+                </div>
+                <button type="button" onClick={selectAllFiltered}
+                  className="px-4 py-3 border-4 border-black rounded-xl bg-[#05FFA1] font-black text-[10px] uppercase hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all whitespace-nowrap">
+                  Select All
+                </button>
+                <button type="button" onClick={clearSelection}
+                  className="px-4 py-3 border-4 border-black rounded-xl bg-[#FDA4AF] font-black text-[10px] uppercase hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all whitespace-nowrap">
+                  Clear
+                </button>
+              </div>
+
+              {selectedUsers.length > 0 && (
+                <div className="px-4 py-2 bg-[#FEF9C3] border-3 border-black rounded-xl font-black text-xs uppercase">
+                  {selectedUsers.length} recipient{selectedUsers.length !== 1 ? "s" : ""} selected
+                </div>
+              )}
+
+              {loadingUsers ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 size={24} className="animate-spin" strokeWidth={3} />
+                </div>
+              ) : (
+                <div className="max-h-64 overflow-y-auto border-4 border-black rounded-xl divide-y-2 divide-black">
+                  {filteredUsers.map((u) => {
+                    const isSelected = selectedUsers.includes(u._id);
+                    return (
+                      <div
+                        key={u._id}
+                        onClick={() => toggleUser(u._id)}
+                        className={`p-3 flex items-center justify-between cursor-pointer transition-colors ${
+                          isSelected ? "bg-[#05FFA1]" : "bg-white hover:bg-gray-50"
+                        }`}
+                      >
+                        <div>
+                          <p className="font-black text-xs uppercase">{u.name}</p>
+                          <p className="text-[10px] font-bold text-gray-500">{u.email}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`text-[9px] font-black uppercase px-2 py-0.5 border-2 border-black rounded-lg ${
+                            u.role === "faculty" ? "bg-[#01FFFF]" : "bg-[#FF71CE]"
+                          }`}>
+                            {u.role}
+                          </span>
+                          {isSelected && <Check size={16} strokeWidth={3} />}
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {filteredUsers.length === 0 && (
+                    <p className="p-4 text-center font-bold text-xs text-gray-400 uppercase">No users found</p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          {/* File Upload Zone */}
+        {/* Email Content */}
+        <div className="bg-white border-4 border-black p-8 rounded-3xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] space-y-6">
+          <span className="inline-block bg-[#1E293B] text-white px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            Step 2 — Compose Email
+          </span>
+
           <div className="space-y-3">
-            <span className="inline-block bg-[#1E293B] text-white px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              Support Files
-            </span>
-            <label className="flex flex-col items-center justify-center gap-4 border-4 border-black border-dashed bg-[#F8FAFC] p-10 rounded-3xl cursor-pointer hover:bg-[#CCFBF1] transition-all hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1">
-              <div className="bg-white border-4 border-black p-3 rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                <Upload size={28} strokeWidth={3} className="text-black" />
-              </div>
-              <div className="text-center">
-                <span className="font-black uppercase text-xs block mb-1">
-                  {file ? file.name : "Drop Resources"}
-                </span>
-                <span className="text-[10px] font-bold text-black/50 uppercase">PDF, PNG, JPG (MAX 10MB)</span>
-              </div>
-              <input
-                type="file"
-                hidden
-                onChange={(e) => setFile(e.target.files[0])}
-              />
-            </label>
+            <label className="font-black text-xs uppercase">Subject</label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              className="w-full p-4 border-4 border-black rounded-2xl font-black text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-none focus:translate-x-1 focus:translate-y-1 transition-all outline-none placeholder:text-black/20"
+              placeholder="e.g., URGENT: END SEMESTER SCHEDULE"
+            />
           </div>
 
-          {/* Verification & Action Area */}
-          <div className="flex flex-col justify-end space-y-6">
-            <div className="bg-[#FFD600] border-4 border-black p-5 rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex gap-4">
-              <div className="bg-white border-2 border-black p-1 h-fit rounded-lg">
-                <AlertCircle size={20} strokeWidth={3} className="text-black" />
-              </div>
-              <p className="text-[11px] font-black leading-tight uppercase tracking-tight">
-                Warning: This action will push notifications to 1,240 students instantly via the Mobile App & Portal.
-              </p>
-            </div>
+          <div className="space-y-3">
+            <label className="font-black text-xs uppercase">Body</label>
+            <textarea
+              rows="8"
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              required
+              className="w-full p-4 border-4 border-black rounded-2xl font-bold text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-none focus:translate-x-1 focus:translate-y-1 transition-all outline-none leading-relaxed placeholder:text-black/20"
+              placeholder="Write your email content here..."
+            />
+          </div>
+        </div>
 
-            <div className="flex items-start gap-4 p-2">
-              <div className="relative flex items-center">
-                <input
-                  type="checkbox"
-                  checked={accept}
-                  onChange={(e) => setAccept(e.target.checked)}
-                  className="w-8 h-8 border-4 border-black rounded-lg appearance-none checked:bg-[#4ADE80] cursor-pointer transition-colors relative z-10 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                />
-                {accept && <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none font-black text-black">✓</div>}
-              </div>
-              <label className="text-[11px] font-black uppercase tracking-tighter leading-snug cursor-pointer select-none">
-                I authorize this broadcast and confirm all content follows institutional guidelines.
-              </label>
-            </div>
-
-            <button
-              type="submit"
-              disabled={!accept}
-              className={`flex items-center justify-center gap-4 border-4 border-black p-6 rounded-2xl font-black uppercase italic tracking-tighter text-2xl transition-all
-                ${accept 
-                  ? "bg-[#4ADE80] shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1" 
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"}
-              `}
-            >
+        {/* Send Button */}
+        <button
+          type="submit"
+          disabled={sending}
+          className={`w-full flex items-center justify-center gap-4 border-4 border-black p-6 rounded-2xl font-black uppercase italic tracking-tighter text-2xl transition-all
+            ${sending
+              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+              : "bg-[#4ADE80] shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1"
+            }`}
+        >
+          {sending ? (
+            <>
+              <Loader2 size={28} className="animate-spin" strokeWidth={3} />
+              Sending...
+            </>
+          ) : (
+            <>
               <Send size={28} strokeWidth={3} />
-              Broadcast Now
-            </button>
-          </div>
-        </div>
+              Send Email
+            </>
+          )}
+        </button>
       </form>
-
-      {/* Footer Info Badge */}
-      <div className="flex justify-center">
-        <div className="bg-white border-4 border-black px-6 py-2 rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-3">
-          <Paperclip size={16} strokeWidth={3} />
-          <span className="text-[10px] font-black uppercase">Current Queue: 0 Pending Items</span>
-        </div>
-      </div>
     </div>
   );
 }
