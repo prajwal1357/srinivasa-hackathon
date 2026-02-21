@@ -1,0 +1,432 @@
+﻿Γû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+node.exe : 
+At C:\nvm4w\nodejs\np
+x.ps1:16 char:5
++     & 
+"$basedir/node$exe"  
+"$basedir/node_module
+s/npm/bin/npx-cli.js"
+ ...
++     ~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (:String   
+ ) [], RemoteExce    
+ption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+> Build error 
+occurred
+Error: Turbopack 
+build failed with 2 
+errors:
+./app/(dashboard)/stu
+dent/layout.js:5:1
+Export ViewList 
+doesn't exist in 
+target module
+[0m [90m  3 |[39m 
+[36mimport[39m 
+[33mLink[39m 
+[36mfrom[39m [32m"
+next/link"[39m[33m;
+[39m
+ [90m  4 |[39m 
+[36mimport[39m { 
+usePathname } 
+[36mfrom[39m [32m"
+next/navigation"[39m
+[33m;[39m
+[31m[1m>[22m[39m
+[90m  5 |[39m 
+[36mimport[39m {
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m
+[31m[1m>[22m[39m
+[90m  6 |[39m   [33
+mLayoutDashboard[39m
+[33m,[39m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m>[22m[39m
+[90m  7 |[39m   [33
+mUpload[39m[33m,[3
+9m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m>[22m[39m
+[90m  8 |[39m   [33
+mLogOut[39m[33m,[3
+9m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m>[22m[39m
+[90m  9 |[39m   [33
+mViewList[39m[33m,
+[39m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m>[22m[39m
+[90m 10 |[39m } 
+[36mfrom[39m [32m"
+lucide-react"[39m[3
+3m;[39m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m
+ [90m 11 |[39m
+ [90m 12 |[39m 
+[36mexport[39m 
+[36mdefault[39m 
+[36mfunction[39m [
+33mStudentLayout[39m
+({ children }) {
+ [90m 13 |[39m   
+[36mconst[39m 
+pathname [33m=[39m 
+usePathname()[33m;[
+39m[0m
+
+The export ViewList 
+was not found in 
+module [project]/node
+_modules/lucide-react
+/dist/esm/lucide-reac
+t.js [app-client] 
+(ecmascript).
+Did you mean to 
+import View?
+All exports of the 
+module are 
+statically known (It 
+doesn't have dynamic 
+exports). So it's 
+known statically 
+that the requested 
+export doesn't exist.
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/(dashboard)
+/student/layout.js 
+[Client Component 
+Browser]
+    ./app/(dashboard)
+/student/layout.js 
+[Server Component]
+
+  Client Component 
+SSR:
+    ./app/(dashboard)
+/student/layout.js 
+[Client Component 
+SSR]
+    ./app/(dashboard)
+/student/layout.js 
+[Server Component]
+
+
+./app/(dashboard)/stu
+dent/layout.js:5:1
+Export ViewList 
+doesn't exist in 
+target module
+[0m [90m  3 |[39m 
+[36mimport[39m 
+[33mLink[39m 
+[36mfrom[39m [32m"
+next/link"[39m[33m;
+[39m
+ [90m  4 |[39m 
+[36mimport[39m { 
+usePathname } 
+[36mfrom[39m [32m"
+next/navigation"[39m
+[33m;[39m
+[31m[1m>[22m[39m
+[90m  5 |[39m 
+[36mimport[39m {
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m
+[31m[1m>[22m[39m
+[90m  6 |[39m   [33
+mLayoutDashboard[39m
+[33m,[39m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m>[22m[39m
+[90m  7 |[39m   [33
+mUpload[39m[33m,[3
+9m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m>[22m[39m
+[90m  8 |[39m   [33
+mLogOut[39m[33m,[3
+9m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m>[22m[39m
+[90m  9 |[39m   [33
+mViewList[39m[33m,
+[39m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m>[22m[39m
+[90m 10 |[39m } 
+[36mfrom[39m [32m"
+lucide-react"[39m[3
+3m;[39m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m
+ [90m 11 |[39m
+ [90m 12 |[39m 
+[36mexport[39m 
+[36mdefault[39m 
+[36mfunction[39m [
+33mStudentLayout[39m
+({ children }) {
+ [90m 13 |[39m   
+[36mconst[39m 
+pathname [33m=[39m 
+usePathname()[33m;[
+39m[0m
+
+The export ViewList 
+was not found in 
+module [project]/node
+_modules/lucide-react
+/dist/esm/lucide-reac
+t.js [app-ssr] 
+(ecmascript).
+Did you mean to 
+import View?
+All exports of the 
+module are 
+statically known (It 
+doesn't have dynamic 
+exports). So it's 
+known statically 
+that the requested 
+export doesn't exist.
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/(dashboard)
+/student/layout.js 
+[Client Component 
+Browser]
+    ./app/(dashboard)
+/student/layout.js 
+[Server Component]
+
+  Client Component 
+SSR:
+    ./app/(dashboard)
+/student/layout.js 
+[Client Component 
+SSR]
+    ./app/(dashboard)
+/student/layout.js 
+[Server Component]
+
+
+    at <unknown> (./a
+pp/(dashboard)/studen
+t/layout.js:5:1)
+    at <unknown> (./a
+pp/(dashboard)/studen
+t/layout.js:5:1)

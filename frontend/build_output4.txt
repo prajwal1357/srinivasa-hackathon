@@ -1,0 +1,55 @@
+﻿Γû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+Γ£ô Compiled successfully in 6.5s
+  Running TypeScript ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/20) ...
+  Generating static pages using 11 workers (5/20) 
+node.exe : Error 
+occurred 
+prerendering page "/f
+aculty/notifyStu". 
+Read more: https://ne
+xtjs.org/docs/message
+s/prerender-error
+At C:\nvm4w\nodejs\np
+x.ps1:16 char:5
++     & 
+"$basedir/node$exe"  
+"$basedir/node_module
+s/npm/bin/npx-cli.js"
+ ...
++     ~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (Error o   
+ ccurred ...prere    
+nder-error:Strin    
+g) [], RemoteExc    
+eption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+Error: The default 
+export is not a 
+React Component in "/
+faculty/notifyStu/pag
+e"
+    at ignore-listed 
+frames
+Export encountered 
+an error on /(dashboa
+rd)/faculty/notifyStu
+/page: 
+/faculty/notifyStu, 
+exiting the build.
+Γ¿» Next.js build 
+worker exited with 
+code: 1 and signal: 
+null
