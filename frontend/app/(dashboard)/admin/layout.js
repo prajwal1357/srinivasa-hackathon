@@ -9,6 +9,7 @@ import {
   LineChart,
   CheckCircle,
   UserCheck,
+  Users,
   Zap,
   Moon,
   Sun,
@@ -23,6 +24,7 @@ export default function AdminLayout({ children }) {
 
   const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
+    { name: "Manage Users", path: "/admin/users", icon: Users },
     { name: "Notify Student", path: "/admin/notifi", icon: Bell },
     { name: "Notice Control", path: "/admin/notice", icon: Upload },
     { name: "Analytics", path: "/admin/analytics", icon: LineChart },
