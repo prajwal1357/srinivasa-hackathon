@@ -1,27 +1,48 @@
-"use client"
 import React, { useState, useEffect } from 'react';
-import { 
-  GraduationCap, 
-  ArrowRight, 
-  Zap, 
-  Sparkles, 
-  ShieldCheck, 
-  BookOpen, 
-  Users, 
-  Clock, 
-  Star,
-  Layers,
-  ChevronRight,
-  Plus,
-  Minus,
-  MessageSquare,
-  BarChart3,
-  Calendar,
-  Search,
-  Download,
-  Terminal,
-  Activity
-} from 'lucide-react';
+
+// Simple Inline SVG Icon Components
+const IconGraduation = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+);
+const IconArrowRight = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+);
+const IconZap = ({ fill = "none" }) => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+);
+const IconSparkles = ({ fill = "none" }) => (
+  <svg width="32" height="32" viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v1m0 16v1m9-9h-1M4 11H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m11.314 11.314l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+);
+const IconShield = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+);
+const IconBook = () => (
+  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+);
+const IconUsers = () => (
+  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+);
+const IconStar = ({ fill = "none" }) => (
+  <svg width="32" height="32" viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+);
+const IconLayers = () => (
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 2 10 5-10 5L2 7l10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
+);
+const IconChevronRight = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+);
+const IconActivity = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+);
+const IconPlus = () => (
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+);
+const IconMinus = () => (
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/></svg>
+);
+const IconTerminal = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m7 11 2-2-2-2M11 13h4M22 17H2"/></svg>
+);
 
 const AccordionItem = ({ title, content }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,7 +53,7 @@ const AccordionItem = ({ title, content }) => {
         className="w-full p-6 flex justify-between items-center text-left hover:bg-[#FDE047] transition-colors"
       >
         <span className="font-black uppercase text-xl italic tracking-tight">{title}</span>
-        {isOpen ? <Minus size={32} strokeWidth={3} /> : <Plus size={32} strokeWidth={3} />}
+        {isOpen ? <IconMinus /> : <IconPlus />}
       </button>
       {isOpen && (
         <div className="p-6 border-t-4 border-black font-bold text-lg leading-relaxed bg-[#FFF7ED]">
@@ -71,9 +92,9 @@ const App = () => {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-3 bg-white border-4 border-black p-2 pr-6 rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-transform cursor-pointer group">
             <div className="bg-[#FB923C] p-2 border-2 border-black rounded-lg group-hover:rotate-12 transition-transform">
-              <GraduationCap size={28} strokeWidth={3} />
+              <IconGraduation />
             </div>
-            <span className="font-black uppercase tracking-tighter text-2xl">LMS.X</span>
+            <span className="font-black uppercase tracking-tighter text-2xl">Team HackPack</span>
           </div>
 
           <div className="flex items-center gap-4">
@@ -82,10 +103,10 @@ const App = () => {
               <a href="#" className="hover:text-[#FB923C] transition-colors">Engines</a>
               <a href="#" className="hover:text-[#FB923C] transition-colors">Pricing</a>
             </div>
-            <a href="#" className="hidden sm:block font-black uppercase text-sm border-4 border-transparent px-6 py-2 hover:border-black rounded-xl transition-all">
+            <a href="/login" className="hidden sm:block font-black uppercase text-sm border-4 border-transparent px-6 py-2 hover:border-black rounded-xl transition-all">
               Login
             </a>
-            <a href="#" className="bg-[#FDE047] border-4 border-black px-6 py-3 rounded-xl font-black uppercase text-sm shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all">
+            <a href="/signup" className="bg-[#FDE047] border-4 border-black px-6 py-3 rounded-xl font-black uppercase text-sm shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all">
               Join Engine
             </a>
           </div>
@@ -96,7 +117,7 @@ const App = () => {
       <section className="relative z-10 max-w-7xl mx-auto px-6 pt-12 pb-32 grid lg:grid-cols-2 gap-16 items-center">
         <div className="space-y-8">
           <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#01FFFF] border-4 border-black rounded-xl text-xs font-black uppercase tracking-widest shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-            <Activity size={16} /> System Operational: {currentTime}
+            <IconActivity /> System Operational: {currentTime}
           </div>
           
           <h1 className="text-6xl md:text-[7.5rem] font-black uppercase tracking-tighter leading-[0.8]">
@@ -110,7 +131,7 @@ const App = () => {
 
           <div className="flex flex-col sm:flex-row gap-6 pt-6">
             <button className="group relative bg-[#0F172A] text-white border-4 border-black px-10 py-6 rounded-3xl font-black uppercase italic text-2xl shadow-[10px_10px_0px_0px_rgba(251,146,60,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-4">
-              Ignite Terminal <ArrowRight className="group-hover:translate-x-3 transition-transform" strokeWidth={4} />
+              Ignite Terminal <span className="group-hover:translate-x-3 transition-transform"><IconArrowRight /></span>
             </button>
             <button className="bg-white border-4 border-black px-10 py-6 rounded-3xl font-black uppercase italic text-2xl shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all">
               Watch Demo
@@ -153,7 +174,7 @@ const App = () => {
           {/* Floating Accents */}
           <div className="absolute -top-10 -right-10 w-48 bg-[#FDE047] border-4 border-black p-4 rounded-3xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rotate-12 z-20 animate-bounce">
              <div className="flex items-center gap-2 mb-2 font-black uppercase text-[10px]">
-               <Zap size={14} fill="currentColor" /> Live Feed
+               <IconZap fill="currentColor" /> Live Feed
              </div>
              <p className="font-black uppercase text-xs">System Node 4 Connected</p>
           </div>
@@ -166,11 +187,11 @@ const App = () => {
           {[1,2,3,4].map(i => (
             <React.Fragment key={i}>
               <span className="text-5xl font-black uppercase tracking-tighter italic">MAXIMUM THROUGHPUT</span>
-              <Sparkles className="text-[#FB923C]" size={40} fill="currentColor" />
+              <span className="text-[#FB923C]"><IconSparkles fill="currentColor" /></span>
               <span className="text-5xl font-black uppercase tracking-tighter italic">ZERO LATENCY NOTES</span>
-              <Layers className="text-[#01FFFF]" size={40} />
+              <span className="text-[#01FFFF]"><IconLayers /></span>
               <span className="text-5xl font-black uppercase tracking-tighter italic">FACULTY VERIFIED CORE</span>
-              <Star className="text-[#FDE047]" size={40} fill="currentColor" />
+              <span className="text-[#FDE047]"><IconStar fill="currentColor" /></span>
             </React.Fragment>
           ))}
         </div>
@@ -193,12 +214,12 @@ const App = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
-            { icon: <Terminal />, title: "Terminal Sync", text: "Instant synchronization across all devices with sub-second delta updates.", color: "bg-[#FDE047]" },
-            { icon: <ShieldCheck />, title: "Ironclad Security", text: "Blockchain-verified credentials and end-to-end encrypted resource sharing.", color: "bg-[#FB923C]" },
-            { icon: <MessageSquare />, title: "Brutal Chat", text: "No fluff communication. Direct, peer-to-peer scholarly exchange channels.", color: "bg-[#01FFFF]" },
-            { icon: <BarChart3 />, title: "Deep Analytics", text: "Understand your learning velocity with massive data visualizations.", color: "bg-[#FF71CE]" },
-            { icon: <Calendar />, title: "Event Matrix", text: "A global schedule that adapts to your performance levels in real-time.", color: "bg-white" },
-            { icon: <Download />, title: "Bulk Fetch", text: "One-click export of entire course libraries in standardized data formats.", color: "bg-[#0F172A] text-white" },
+            { icon: <IconTerminal />, title: "Terminal Sync", text: "Instant synchronization across all devices with sub-second delta updates.", color: "bg-[#FDE047]" },
+            { icon: <IconShield />, title: "Ironclad Security", text: "Blockchain-verified credentials and end-to-end encrypted resource sharing.", color: "bg-[#FB923C]" },
+            { icon: <span className="font-bold text-xl tracking-tighter">[M]</span>, title: "Brutal Chat", text: "No fluff communication. Direct, peer-to-peer scholarly exchange channels.", color: "bg-[#01FFFF]" },
+            { icon: <span className="font-bold text-xl tracking-tighter">|l|</span>, title: "Deep Analytics", text: "Understand your learning velocity with massive data visualizations.", color: "bg-[#FF71CE]" },
+            { icon: <span className="font-bold text-xl tracking-tighter">[D]</span>, title: "Event Matrix", text: "A global schedule that adapts to your performance levels in real-time.", color: "bg-white" },
+            { icon: <span className="font-bold text-xl tracking-tighter">[V]</span>, title: "Bulk Fetch", text: "One-click export of entire course libraries in standardized data formats.", color: "bg-[#0F172A] text-white" },
           ].map((feat, i) => (
             <div key={i} className={`${feat.color} border-4 border-black p-8 rounded-[2.5rem] shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-2 transition-all group`}>
               <div className="bg-white border-4 border-black p-4 inline-block rounded-2xl mb-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-black">
@@ -222,14 +243,14 @@ const App = () => {
             {/* Student */}
             <div className="bg-white border-8 border-[#01FFFF] p-12 rounded-[4rem] flex flex-col items-center text-center group hover:-rotate-2 transition-transform">
               <div className="w-24 h-24 bg-[#01FFFF] border-4 border-black rounded-3xl flex items-center justify-center mb-10 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-                <Users size={50} strokeWidth={3} />
+                <IconUsers />
               </div>
               <h3 className="text-4xl font-black uppercase mb-6 italic tracking-tighter">Student Node</h3>
               <p className="font-bold text-lg mb-10 text-black/60 italic">"I consume knowledge at the speed of light. I need resources now."</p>
               <ul className="space-y-4 font-black uppercase text-sm mb-12 w-full text-left bg-black/5 p-6 rounded-2xl">
-                <li className="flex items-center gap-3"><ChevronRight size={18} /> Unlimited Repository Access</li>
-                <li className="flex items-center gap-3"><ChevronRight size={18} /> Performance Tracking</li>
-                <li className="flex items-center gap-3"><ChevronRight size={18} /> Peer Discovery</li>
+                <li className="flex items-center gap-3"><IconChevronRight /> Unlimited Repository Access</li>
+                <li className="flex items-center gap-3"><IconChevronRight /> Performance Tracking</li>
+                <li className="flex items-center gap-3"><IconChevronRight /> Peer Discovery</li>
               </ul>
               <button className="mt-auto w-full py-6 bg-black text-white rounded-2xl font-black uppercase italic text-xl hover:bg-[#01FFFF] hover:text-black transition-colors">Initialize</button>
             </div>
@@ -237,14 +258,14 @@ const App = () => {
             {/* Faculty */}
             <div className="bg-[#FB923C] border-8 border-black p-12 rounded-[4rem] flex flex-col items-center text-center group hover:scale-105 transition-transform z-10">
               <div className="w-24 h-24 bg-white border-4 border-black rounded-3xl flex items-center justify-center mb-10 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-                <BookOpen size={50} strokeWidth={3} />
+                <IconBook />
               </div>
               <h3 className="text-4xl font-black uppercase mb-6 italic tracking-tighter">Faculty Engine</h3>
               <p className="font-bold text-lg mb-10 text-black/80 italic">"I architect the curriculum. I require tools of mass education."</p>
               <ul className="space-y-4 font-black uppercase text-sm mb-12 w-full text-left bg-black/10 p-6 rounded-2xl">
-                <li className="flex items-center gap-3"><ChevronRight size={18} /> Curriculum Builder</li>
-                <li className="flex items-center gap-3"><ChevronRight size={18} /> Grade Matrix Automation</li>
-                <li className="flex items-center gap-3"><ChevronRight size={18} /> Batch Communications</li>
+                <li className="flex items-center gap-3"><IconChevronRight /> Curriculum Builder</li>
+                <li className="flex items-center gap-3"><IconChevronRight /> Grade Matrix Automation</li>
+                <li className="flex items-center gap-3"><IconChevronRight /> Batch Communications</li>
               </ul>
               <button className="mt-auto w-full py-6 bg-white text-black rounded-2xl font-black uppercase italic text-xl hover:bg-black hover:text-white transition-colors border-4 border-black">Authorize</button>
             </div>
@@ -252,14 +273,14 @@ const App = () => {
             {/* Admin */}
             <div className="bg-white border-8 border-[#FF71CE] p-12 rounded-[4rem] flex flex-col items-center text-center group hover:rotate-2 transition-transform">
               <div className="w-24 h-24 bg-[#FF71CE] border-4 border-black rounded-3xl flex items-center justify-center mb-10 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] text-white">
-                <ShieldCheck size={50} strokeWidth={3} />
+                <IconShield />
               </div>
               <h3 className="text-4xl font-black uppercase mb-6 italic tracking-tighter">Admin Core</h3>
               <p className="font-bold text-lg mb-10 text-black/60 italic">"I oversee the system integrity. I am the architect."</p>
               <ul className="space-y-4 font-black uppercase text-sm mb-12 w-full text-left bg-black/5 p-6 rounded-2xl">
-                <li className="flex items-center gap-3"><ChevronRight size={18} /> Global Analytics</li>
-                <li className="flex items-center gap-3"><ChevronRight size={18} /> User Node Governance</li>
-                <li className="flex items-center gap-3"><ChevronRight size={18} /> System Overrides</li>
+                <li className="flex items-center gap-3"><IconChevronRight /> Global Analytics</li>
+                <li className="flex items-center gap-3"><IconChevronRight /> User Node Governance</li>
+                <li className="flex items-center gap-3"><IconChevronRight /> System Overrides</li>
               </ul>
               <button className="mt-auto w-full py-6 bg-black text-white rounded-2xl font-black uppercase italic text-xl hover:bg-[#FF71CE] hover:text-black transition-colors">Elevate</button>
             </div>
@@ -291,13 +312,13 @@ const App = () => {
             <h2 className="text-6xl md:text-9xl font-black uppercase tracking-tighter leading-none mb-12">Stop Lagging. <br />Start Learning.</h2>
             <div className="flex flex-col sm:flex-row justify-center gap-8">
               <button className="bg-black text-white border-4 border-black px-16 py-8 rounded-[2.5rem] font-black uppercase italic text-3xl shadow-[10px_10px_0px_0px_rgba(255,255,255,0.4)] hover:translate-y-2 hover:shadow-none transition-all flex items-center justify-center gap-4">
-                Boot Engine <Zap fill="currentColor" />
+                Boot Engine <IconZap fill="currentColor" />
               </button>
             </div>
           </div>
           {/* Decorative icons */}
-          <Sparkles className="absolute top-20 left-20 text-white/20 w-48 h-48 -rotate-12" fill="currentColor" />
-          <Terminal className="absolute bottom-10 right-20 text-black/10 w-64 h-64 rotate-12" strokeWidth={4} />
+          <span className="absolute top-20 left-20 text-white/20 w-48 h-48 -rotate-12"><IconSparkles fill="currentColor" /></span>
+          <span className="absolute bottom-10 right-20 text-black/10 w-64 h-64 rotate-12"><IconTerminal /></span>
         </div>
       </section>
 
@@ -307,9 +328,9 @@ const App = () => {
           <div className="col-span-2 space-y-8">
             <div className="flex items-center gap-4">
                <div className="bg-[#FB923C] p-3 border-4 border-black rounded-2xl">
-                <GraduationCap size={32} strokeWidth={3} />
+                <IconGraduation />
               </div>
-              <span className="font-black uppercase tracking-tighter text-4xl italic">Team HackPack</span>
+              <span className="font-black uppercase tracking-tighter text-4xl italic">LMS.X</span>
             </div>
             <p className="font-bold text-2xl max-w-sm italic tracking-tight">The world's most aggressive learning management system.</p>
             <div className="flex gap-6">
