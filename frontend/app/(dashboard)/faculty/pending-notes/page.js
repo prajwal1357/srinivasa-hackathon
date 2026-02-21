@@ -8,7 +8,8 @@ import {
   User, 
   BookOpen, 
   Clock, 
-  AlertCircle 
+  AlertCircle, 
+  AtomIcon
 } from "lucide-react";
 
 export default function PendingNotesPage() {
@@ -28,6 +29,18 @@ export default function PendingNotesPage() {
       setLoading(false);
     }
   };
+
+  const fetchAi = async () => {
+    try{
+      const res= axios.post("127.0.0.1:8000/Ai/FileReview",{
+        doc_name:noteId,
+        doc_valid:true,
+        doc_link: notes.fileUrl
+      })
+    }catch(err){
+      console.error("AI error:", err);
+    }
+  }
 
   useEffect(() => {
     fetchNotes();
@@ -160,6 +173,11 @@ export default function PendingNotesPage() {
                       className="flex-1 bg-rose-400 border-4 border-black py-3 rounded-xl font-black uppercase text-xs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all disabled:opacity-50"
                     >
                       {processingId === note._id ? "..." : <X className="mx-auto" size={20} strokeWidth={3} />}
+                    </button>
+                    <button
+                    onClick={fetchAi}
+                     className="flex-1 bg-blue-400 border-4 border-black py-3 rounded-xl font-black uppercase items-center justify-center flex text-xs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all disabled:opacity-50">
+                      <AtomIcon size={20} strokeWidth={3} className="text-white" />
                     </button>
                   </div>
                 </div>
