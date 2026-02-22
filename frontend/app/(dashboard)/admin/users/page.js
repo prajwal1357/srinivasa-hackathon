@@ -237,49 +237,47 @@ export default function AdminUsersPage() {
                   </div>
                 </div>
 
-                {user.role !== "admin" && (
-                  <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap items-center gap-3">
 
-                    <button
-                      onClick={() =>
-                        handleRoleChange(
-                          user._id,
-                          user.role === "student" ? "faculty" : "student"
-                        )
-                      }
-                      className="px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition"
+                  {/* Role Dropdown */}
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs font-medium text-slate-500">Role:</label>
+                    <select
+                      value={user.role}
+                      onChange={(e) => handleRoleChange(user._id, e.target.value)}
+                      disabled={actionLoading === user._id}
+                      className="px-3 py-2 rounded-xl border border-slate-200 text-sm font-medium bg-white focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer disabled:opacity-50"
                     >
-                      Switch Role
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        handleStatusChange(
-                          user._id,
-                          user.status === "approved"
-                            ? "rejected"
-                            : "approved"
-                        )
-                      }
-                      className="px-4 py-2 rounded-xl bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 transition"
-                    >
-                      Toggle Status
-                    </button>
-
-                    <button
-                      onClick={() => setDeleteConfirm(user._id)}
-                      className="px-4 py-2 rounded-xl bg-rose-500 text-white text-sm font-medium hover:bg-rose-600 transition"
-                    >
-                      Remove
-                    </button>
+                      <option value="student">Student</option>
+                      <option value="faculty">Faculty</option>
+                      <option value="admin">Admin</option>
+                    </select>
                   </div>
-                )}
 
-                {user.role === "admin" && (
-                  <span className="px-4 py-2 rounded-xl bg-red-100 text-red-600 text-sm font-medium">
-                    Protected Admin
-                  </span>
-                )}
+                  {/* Status Dropdown */}
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs font-medium text-slate-500">Status:</label>
+                    <select
+                      value={user.status}
+                      onChange={(e) => handleStatusChange(user._id, e.target.value)}
+                      disabled={actionLoading === user._id}
+                      className="px-3 py-2 rounded-xl border border-slate-200 text-sm font-medium bg-white focus:ring-2 focus:ring-emerald-500 outline-none cursor-pointer disabled:opacity-50"
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="approved">Approved</option>
+                      <option value="rejected">Rejected</option>
+                    </select>
+                  </div>
+
+                  {/* Remove Button */}
+                  <button
+                    onClick={() => setDeleteConfirm(user._id)}
+                    disabled={actionLoading === user._id}
+                    className="px-4 py-2 rounded-xl bg-rose-500 text-white text-sm font-medium hover:bg-rose-600 transition disabled:opacity-50"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
             </div>
           ))}
