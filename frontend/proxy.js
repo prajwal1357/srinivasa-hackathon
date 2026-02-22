@@ -25,21 +25,17 @@ export async function proxy(request) {
 
     const { role, status } = payload;
 
-    // 3. Security: Handle "Pending" or "Blocked" users
-    // If the account isn't approved, prevent access to any dashboard
+  
     if (status !== "approved" && !pathname.startsWith("/pending-approval")) {
-      // You might want to create a small 'waiting' page for users
-      // return NextResponse.redirect(new URL("/pending-approval", request.url));
+
     }
 
-    // 4. Role-Based Access Control (RBAC) Logic
-    // Redirect root "/" to respective dashboards
+
     if (pathname === "/") {
       return NextResponse.redirect(new URL(`/${role}/dashboard`, request.url));
     }
 
-    // 5. Strict Path Protection
-    // Prevent a 'student' from accessing '/admin/*' or '/faculty/*'
+
     if (pathname.startsWith("/admin") && role !== "admin") {
       return NextResponse.redirect(new URL(`/${role}/dashboard`, request.url));
     }
@@ -61,7 +57,7 @@ export async function proxy(request) {
   }
 }
 
-// 6. Matcher Configuration
+
 export const config = {
   matcher: [
     "/",
@@ -71,4 +67,4 @@ export const config = {
     "/login",
     "/signup",
   ],
-};
+};    

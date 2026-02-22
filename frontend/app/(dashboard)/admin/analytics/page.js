@@ -14,80 +14,93 @@ import {
   Bell,
   GraduationCap,
   Upload,
+  ChevronDown,
+  Info
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   PieChart, Pie, Cell,
   AreaChart, Area,
-  RadialBarChart, RadialBar,
   ResponsiveContainer,
 } from "recharts";
 
-// ─── Neo-Brutalist Theme Colors ───
+// ─── Professional Theme Colors ───
 const COLORS = {
-  cyan: "#01FFFF",
-  pink: "#FF71CE",
-  yellow: "#FFD600",
-  green: "#05FFA1",
-  coral: "#FF8A5B",
-  lilac: "#C4B5FD",
-  red: "#FDA4AF",
-  blue: "#93C5FD",
-  darkBg: "#1E293B",
+  indigo: "#6366F1",
+  mint: "#22C55E",
+  amber: "#F59E0B",
+  violet: "#8B5CF6",
+  rose: "#F43F5E",
+  slate: "#64748B",
+  blue: "#3B82F6",
+  dark: "#0F172A",
 };
 
-const PIE_COLORS = [COLORS.cyan, COLORS.pink, COLORS.yellow, COLORS.green, COLORS.coral, COLORS.lilac];
+const PIE_COLORS = [COLORS.indigo, COLORS.mint, COLORS.amber, COLORS.violet, COLORS.rose, COLORS.blue];
 
-// ─── Custom Tooltip ───
+// ─── Custom Tooltip (Refined) ───
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white border-3 border-black rounded-xl p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] font-mono">
-      <p className="font-black text-xs uppercase mb-1">{label}</p>
+    <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-xl shadow-slate-200/50 backdrop-blur-md">
+      <p className="font-bold text-xs text-slate-400 uppercase tracking-widest mb-2 border-b border-slate-50 pb-2">{label}</p>
       {payload.map((p, i) => (
-        <p key={i} className="text-[11px] font-bold" style={{ color: p.color }}>
-          {p.name}: {p.value}
-        </p>
+        <div key={i} className="flex items-center justify-between gap-4 py-1">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full" style={{ background: p.color }} />
+            <span className="text-[12px] font-semibold text-slate-600">{p.name}</span>
+          </div>
+          <span className="text-[12px] font-extrabold text-slate-900">{p.value}</span>
+        </div>
       ))}
     </div>
   );
 };
 
-// ─── Section Header ───
-function SectionHeader({ icon: Icon, title, color = COLORS.coral }) {
+// ─── Section Header (Refined) ───
+function SectionHeader({ icon: Icon, title }) {
   return (
-    <div className="inline-block bg-[#1E293B] text-white px-6 py-2 border-4 border-black rounded-xl shadow-[6px_6px_0px_0px]" style={{ boxShadow: `6px 6px 0px 0px ${color}` }}>
-      <h3 className="text-xl font-black uppercase italic tracking-tighter flex items-center gap-3">
-        <Icon size={24} strokeWidth={3} />
+    <div className="flex items-center gap-4 mb-6">
+      <div className="bg-white p-2.5 rounded-xl border border-gray-100 shadow-sm text-indigo-500">
+        <Icon size={22} />
+      </div>
+      <h3 className="text-2xl font-bold text-slate-900 tracking-tight">
         {title}
       </h3>
     </div>
   );
 }
 
-// ─── Stat Card ───
-function StatCard({ icon: Icon, title, value, color }) {
+// ─── Stat Card (Refined) ───
+function StatCard({ icon: Icon, title, value, colorClass }) {
   return (
-    <div className={`${color} p-5 border-4 border-black rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex flex-col justify-between min-h-[140px]`}>
-      <div className="flex justify-between items-start">
-        <div className="bg-white p-2 border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-          <Icon size={18} strokeWidth={3} className="text-black" />
+    <div className="bg-white rounded-4xl p-6 shadow-sm border border-gray-50 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 hover:-translate-y-1">
+      <div className="flex items-center justify-between mb-6">
+        <div className={`p-3 rounded-2xl ${colorClass} shadow-sm group-hover:scale-110 transition-transform`}>
+          <Icon size={20} />
         </div>
+        <Info size={16} className="text-slate-200" />
       </div>
-      <div className="mt-3">
-        <p className="text-black font-black uppercase text-[9px] tracking-widest opacity-60 mb-1">{title}</p>
-        <h4 className="text-3xl font-black tracking-tighter text-black">{value}</h4>
+      <div>
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-1">
+          {title}
+        </p>
+        <h4 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+          {value ? value.toLocaleString() : 0}
+        </h4>
       </div>
     </div>
   );
 }
 
-// ─── Chart Card Wrapper ───
+// ─── Chart Card Wrapper (Refined) ───
 function ChartCard({ children, title, className = "" }) {
   return (
-    <div className={`bg-white border-4 border-black rounded-3xl p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] ${className}`}>
-      {title && <p className="font-black text-sm uppercase tracking-tight mb-5 text-gray-600">{title}</p>}
-      {children}
+    <div className={`bg-white border border-gray-100 rounded-[2.5rem] p-8 shadow-sm ${className}`}>
+      {title && <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-8">{title}</p>}
+      <div className="w-full">
+        {children}
+      </div>
     </div>
   );
 }
@@ -95,122 +108,155 @@ function ChartCard({ children, title, className = "" }) {
 export default function AnalyticsPanel() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    (async () => {
+    const fetchAnalytics = async () => {
       try {
         const res = await fetch("/api/admin/analytics");
+        if (!res.ok) throw new Error("Failed to fetch real-time analytics data.");
         const result = await res.json();
         setData(result);
       } catch (err) {
         console.error("Analytics fetch error:", err);
+        setError(err.message);
       } finally {
         setLoading(false);
       }
-    })();
+    };
+    fetchAnalytics();
   }, []);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 size={48} className="animate-spin text-black" strokeWidth={3} />
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <Loader2 size={48} className="animate-spin text-indigo-500" strokeWidth={2} />
+        <p className="text-slate-400 font-bold text-sm uppercase tracking-[0.2em]">Synchronizing Real Data</p>
       </div>
     );
   }
 
-  if (!data || data.message) {
-    return <div className="p-10 font-black text-xl uppercase">Failed to load analytics data.</div>;
+  if (error || !data || data.message) {
+    return (
+      <div className="p-20 text-center flex flex-col items-center gap-4">
+        <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mb-2">
+          <Info size={32} />
+        </div>
+        <h2 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Data Connection Error</h2>
+        <p className="text-slate-500 max-w-xs text-sm font-medium leading-relaxed">
+          Unable to establish a connection with the analytics endpoint. Please check your API configuration.
+        </p>
+      </div>
+    );
   }
 
   const { overview, userStatus, roleDistribution, noticesByRole, noteStats, classStats, eventStats, registrationTrend, notesByUploader } = data;
 
-  // Student status for stacked bar
   const statusComparison = [
-    { name: "Approved", Students: userStatus.students.approved, Faculty: userStatus.faculty.approved },
-    { name: "Pending", Students: userStatus.students.pending, Faculty: userStatus.faculty.pending },
-    { name: "Rejected", Students: userStatus.students.rejected, Faculty: userStatus.faculty.rejected },
+    { name: "Approved", Students: userStatus?.students?.approved || 0, Faculty: userStatus?.faculty?.approved || 0 },
+    { name: "Pending", Students: userStatus?.students?.pending || 0, Faculty: userStatus?.faculty?.pending || 0 },
+    { name: "Rejected", Students: userStatus?.students?.rejected || 0, Faculty: userStatus?.faculty?.rejected || 0 },
   ];
 
   return (
-    <div className="space-y-14 font-mono animate-in fade-in duration-700 pb-10">
+    <div className="space-y-12 animate-fade-in pb-10" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .recharts-cartesian-axis-tick-value {
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-weight: 600;
+          fill: #94A3B8;
+        }
+      `}} />
 
       {/* ═══════════ PAGE HEADER ═══════════ */}
-      <div className="relative overflow-hidden bg-[#FF8A5B] border-4 border-black p-10 rounded-[2.5rem] shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
-        <div className="absolute top-6 right-10 w-32 h-10 bg-[#FFD600] border-2 border-black -rotate-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center font-black text-[10px] uppercase z-20 hidden md:flex">
-          Live Metrics
-        </div>
-        <div className="absolute -bottom-4 right-28 w-24 h-24 bg-[#01FFFF] border-4 border-black rounded-full rotate-12 hidden md:block" />
+      <div className="relative overflow-hidden bg-slate-900 text-white p-10 md:p-14 rounded-[3rem] shadow-xl shadow-slate-200">
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-500/10 blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-green-500/10 blur-[100px] rounded-full -translate-x-1/2 translate-y-1/2" />
         
         <div className="relative z-10">
-          <div className="inline-block px-4 py-1 bg-[#1E293B] border-2 border-black rounded-full text-[10px] text-white font-black uppercase tracking-widest mb-6">
-            Intelligence Layer
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full mb-8 border border-white/10">
+            <span className="flex h-1.5 w-1.5 rounded-full bg-green-400 animate-ping"></span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/70">Real-Time Intelligence</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-black uppercase leading-tight tracking-tighter">
-            Analytics &<br />Insights
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4">
+            Analytics & <br /> Insights
           </h1>
-          <p className="max-w-xl mt-4 font-bold text-black/70 leading-snug uppercase text-xs">
-            Real-time department analytics — user engagement, resource activity, event performance, and class-level breakdowns.
+          <p className="max-w-xl mt-6 font-medium text-slate-400 leading-relaxed text-sm md:text-base">
+            Live departmental analytics — streaming user engagement, resource metrics, and academic performance directly from your database.
           </p>
         </div>
       </div>
 
       {/* ═══════════ OVERVIEW KPIs ═══════════ */}
-      <section className="space-y-6">
-        <SectionHeader icon={BarChart3} title="Overview" color={COLORS.cyan} />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-          <StatCard icon={Users} title="Students" value={overview.totalStudents} color="bg-[#CCFBF1]" />
-          <StatCard icon={UserCheck} title="Faculty" value={overview.totalFaculty} color="bg-[#FFEDD5]" />
-          <StatCard icon={GraduationCap} title="Classes" value={overview.totalClasses} color="bg-[#DBEAFE]" />
-          <StatCard icon={BookOpen} title="Resources" value={overview.totalNotes} color="bg-[#F3E8FF]" />
-          <StatCard icon={Bell} title="Notices" value={(data.noticesByRole?.[0]?.value || 0) + (data.noticesByRole?.[1]?.value || 0)} color="bg-[#FEF9C3]" />
-          <StatCard icon={CalendarDays} title="Events" value={overview.totalEvents} color="bg-[#FFD1D1]" />
-          <StatCard icon={FileText} title="Registrations" value={overview.totalRegistrations} color="bg-[#CCFBF1]" />
-          <StatCard icon={Target} title="Class Assignments" value={overview.totalAssignments} color="bg-[#FFEDD5]" />
+      <section className="space-y-8">
+        <SectionHeader icon={BarChart3} title="Quick Overview" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <StatCard icon={Users} title="Students" value={overview?.totalStudents} colorClass="bg-indigo-50 text-indigo-600" />
+          <StatCard icon={UserCheck} title="Faculty" value={overview?.totalFaculty} colorClass="bg-green-50 text-green-600" />
+          <StatCard icon={GraduationCap} title="Classes" value={overview?.totalClasses} colorClass="bg-amber-50 text-amber-600" />
+          <StatCard icon={BookOpen} title="Resources" value={overview?.totalNotes} colorClass="bg-violet-50 text-violet-600" />
+          <StatCard icon={Bell} title="Notices" value={(noticesByRole?.[0]?.value || 0) + (noticesByRole?.[1]?.value || 0)} colorClass="bg-rose-50 text-rose-600" />
+          <StatCard icon={CalendarDays} title="Events" value={overview?.totalEvents} colorClass="bg-blue-50 text-blue-600" />
+          <StatCard icon={FileText} title="Registrations" value={overview?.totalRegistrations} colorClass="bg-indigo-50 text-indigo-600" />
+          <StatCard icon={Target} title="Assignments" value={overview?.totalAssignments} colorClass="bg-amber-50 text-amber-600" />
         </div>
       </section>
 
       {/* ═══════════ USER ANALYTICS ═══════════ */}
-      <section className="space-y-6">
-        <SectionHeader icon={Users} title="User Analytics" color={COLORS.pink} />
+      <section className="space-y-8">
+        <SectionHeader icon={Users} title="Community Demographics" />
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Role Distribution Pie */}
+        <div className="grid lg:grid-cols-2 gap-8">
           <ChartCard title="User Role Distribution">
-            <ResponsiveContainer width="100%" height={280}>
+            <ResponsiveContainer width="100%" height={320}>
               <PieChart>
                 <Pie
-                  data={roleDistribution}
+                  data={roleDistribution || []}
                   cx="50%" cy="50%"
-                  innerRadius={55} outerRadius={100}
-                  paddingAngle={4}
+                  innerRadius={65} outerRadius={110}
+                  paddingAngle={5}
                   dataKey="value"
-                  stroke="#000" strokeWidth={2}
+                  stroke="none"
                 >
-                  {roleDistribution.map((_, i) => (
-                    <Cell key={i} fill={PIE_COLORS[i]} />
+                  {(roleDistribution || []).map((_, i) => (
+                    <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} className="opacity-90 hover:opacity-100 transition-opacity" />
                   ))}
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
-                <Legend
-                  formatter={(value) => <span className="font-black text-xs uppercase">{value}</span>}
+                <Legend 
+                  verticalAlign="bottom" 
+                  height={36}
+                  formatter={(value) => <span className="font-bold text-[11px] uppercase text-slate-500 tracking-wider ml-2">{value}</span>}
                 />
               </PieChart>
             </ResponsiveContainer>
           </ChartCard>
 
-          {/* Status Comparison Bar */}
-          <ChartCard title="Approval Status Breakdown">
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={statusComparison} barGap={6}>
-                <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" />
-                <XAxis dataKey="name" tick={{ fontSize: 11, fontWeight: 900 }} />
-                <YAxis tick={{ fontSize: 11 }} />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend
-                  formatter={(value) => <span className="font-black text-xs uppercase">{value}</span>}
+          <ChartCard title="Verification Status">
+            <ResponsiveContainer width="100%" height={320}>
+              <BarChart data={statusComparison} barGap={8}>
+                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} dy={10} />
+                <YAxis axisLine={false} tickLine={false} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f8fafc' }} />
+                <Legend 
+                  verticalAlign="bottom" 
+                  height={36}
+                  formatter={(value) => <span className="font-bold text-[11px] uppercase text-slate-500 tracking-wider ml-2">{value}</span>}
                 />
-                <Bar dataKey="Students" fill={COLORS.cyan} stroke="#000" strokeWidth={2} radius={[6, 6, 0, 0]} />
-                <Bar dataKey="Faculty" fill={COLORS.pink} stroke="#000" strokeWidth={2} radius={[6, 6, 0, 0]} />
+                <Bar dataKey="Students" fill={COLORS.indigo} radius={[6, 6, 0, 0]} barSize={24} />
+                <Bar dataKey="Faculty" fill={COLORS.mint} radius={[6, 6, 0, 0]} barSize={24} />
               </BarChart>
             </ResponsiveContainer>
           </ChartCard>
@@ -218,34 +264,37 @@ export default function AnalyticsPanel() {
       </section>
 
       {/* ═══════════ REGISTRATION TREND ═══════════ */}
-      {registrationTrend.length > 0 && (
-        <section className="space-y-6">
-          <SectionHeader icon={TrendingUp} title="Registration Trend" color={COLORS.green} />
+      {registrationTrend?.length > 0 && (
+        <section className="space-y-8">
+          <SectionHeader icon={TrendingUp} title="Platform Growth" />
 
-          <ChartCard title="New User Signups (Last 6 Months)">
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={registrationTrend}>
+          <ChartCard title="New Signups Activity (Last 6 Months)">
+            <ResponsiveContainer width="100%" height={350}>
+              <AreaChart data={registrationTrend} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="gradStudents" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={COLORS.cyan} stopOpacity={0.6} />
-                    <stop offset="95%" stopColor={COLORS.cyan} stopOpacity={0.05} />
+                    <stop offset="5%" stopColor={COLORS.indigo} stopOpacity={0.1} />
+                    <stop offset="95%" stopColor={COLORS.indigo} stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="gradFaculty" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={COLORS.pink} stopOpacity={0.6} />
-                    <stop offset="95%" stopColor={COLORS.pink} stopOpacity={0.05} />
+                    <stop offset="5%" stopColor={COLORS.mint} stopOpacity={0.1} />
+                    <stop offset="95%" stopColor={COLORS.mint} stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" />
-                <XAxis dataKey="month" tick={{ fontSize: 10, fontWeight: 900 }} />
-                <YAxis tick={{ fontSize: 11 }} />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
+                <XAxis dataKey="month" axisLine={false} tickLine={false} dy={10} />
+                <YAxis axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend
-                  formatter={(value) => <span className="font-black text-xs uppercase">{value}</span>}
+                <Legend 
+                  verticalAlign="top" 
+                  align="right"
+                  height={36}
+                  formatter={(value) => <span className="font-bold text-[11px] uppercase text-slate-500 tracking-wider ml-2">{value}</span>}
                 />
                 <Area type="monotone" dataKey="students" name="Students"
-                  stroke={COLORS.cyan} strokeWidth={3} fill="url(#gradStudents)" />
+                  stroke={COLORS.indigo} strokeWidth={3} fill="url(#gradStudents)" />
                 <Area type="monotone" dataKey="faculty" name="Faculty"
-                  stroke={COLORS.pink} strokeWidth={3} fill="url(#gradFaculty)" />
+                  stroke={COLORS.mint} strokeWidth={3} fill="url(#gradFaculty)" />
               </AreaChart>
             </ResponsiveContainer>
           </ChartCard>
@@ -253,116 +302,105 @@ export default function AnalyticsPanel() {
       )}
 
       {/* ═══════════ RESOURCE ANALYTICS ═══════════ */}
-      <section className="space-y-6">
-        <SectionHeader icon={BookOpen} title="Resource Analytics" color={COLORS.yellow} />
+      <section className="space-y-8">
+        <SectionHeader icon={BookOpen} title="Content Distribution" />
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* Notes by Type Pie */}
-          <ChartCard title="Resources by Type">
+        <div className="grid lg:grid-cols-3 gap-8">
+          <ChartCard title="By Format">
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
-                  data={noteStats.byType}
+                  data={noteStats?.byType || []}
                   cx="50%" cy="50%"
-                  outerRadius={80}
-                  paddingAngle={4}
+                  innerRadius={50} outerRadius={80}
+                  paddingAngle={5}
                   dataKey="value"
-                  stroke="#000" strokeWidth={2}
+                  stroke="none"
                 >
-                  <Cell fill={COLORS.green} />
-                  <Cell fill={COLORS.coral} />
+                  <Cell fill={COLORS.mint} />
+                  <Cell fill={COLORS.amber} />
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
-                <Legend
-                  formatter={(value) => <span className="font-black text-[10px] uppercase">{value}</span>}
-                />
+                <Legend formatter={(value) => <span className="font-bold text-[10px] uppercase text-slate-500 ml-1">{value}</span>} />
               </PieChart>
             </ResponsiveContainer>
           </ChartCard>
 
-          {/* Note Approval Status */}
-          <ChartCard title="Approval Status">
+          <ChartCard title="Resource Workflow">
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
-                  data={noteStats.byStatus}
+                  data={noteStats?.byStatus || []}
                   cx="50%" cy="50%"
-                  innerRadius={45} outerRadius={80}
-                  paddingAngle={3}
+                  innerRadius={50} outerRadius={80}
+                  paddingAngle={5}
                   dataKey="value"
-                  stroke="#000" strokeWidth={2}
+                  stroke="none"
                 >
-                  <Cell fill={COLORS.green} />
-                  <Cell fill={COLORS.yellow} />
-                  <Cell fill={COLORS.red} />
+                  <Cell fill={COLORS.mint} />
+                  <Cell fill="#CBD5E1" />
+                  <Cell fill={COLORS.rose} />
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
-                <Legend
-                  formatter={(value) => <span className="font-black text-[10px] uppercase">{value}</span>}
-                />
+                <Legend formatter={(value) => <span className="font-bold text-[10px] uppercase text-slate-500 ml-1">{value}</span>} />
               </PieChart>
             </ResponsiveContainer>
           </ChartCard>
 
-          {/* Uploads by Role */}
-          <ChartCard title="Uploads by Role">
+          <ChartCard title="Uploader Segments">
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
-                  data={notesByUploader}
+                  data={notesByUploader || []}
                   cx="50%" cy="50%"
-                  outerRadius={80}
-                  paddingAngle={4}
+                  innerRadius={50} outerRadius={80}
+                  paddingAngle={5}
                   dataKey="value"
-                  stroke="#000" strokeWidth={2}
+                  stroke="none"
                 >
-                  <Cell fill={COLORS.lilac} />
-                  <Cell fill={COLORS.cyan} />
+                  <Cell fill={COLORS.violet} />
+                  <Cell fill={COLORS.blue} />
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
-                <Legend
-                  formatter={(value) => <span className="font-black text-[10px] uppercase">{value}</span>}
-                />
+                <Legend formatter={(value) => <span className="font-bold text-[10px] uppercase text-slate-500 ml-1">{value}</span>} />
               </PieChart>
             </ResponsiveContainer>
           </ChartCard>
         </div>
       </section>
 
-      {/* ═══════════ NOTICES ANALYTICS ═══════════ */}
-      <section className="space-y-6">
-        <SectionHeader icon={Bell} title="Notice Distribution" color={COLORS.lilac} />
+      {/* ═══════════ NOTICES & EVENTS ═══════════ */}
+      <section className="space-y-8">
+        <SectionHeader icon={Bell} title="System Activity" />
 
-        <div className="grid md:grid-cols-2 gap-8">
-          <ChartCard title="Notices by Creator Role">
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={noticesByRole} layout="vertical" barSize={40}>
-                <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" />
-                <XAxis type="number" tick={{ fontSize: 11 }} />
-                <YAxis dataKey="name" type="category" tick={{ fontSize: 12, fontWeight: 900 }} width={80} />
+        <div className="grid lg:grid-cols-2 gap-8">
+          <ChartCard title="Notices Volume by Creator">
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={noticesByRole || []} layout="vertical" margin={{ left: 20 }}>
+                <CartesianGrid horizontal={false} strokeDasharray="3 3" stroke="#f1f5f9" />
+                <XAxis type="number" axisLine={false} tickLine={false} />
+                <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="value" name="Notices" stroke="#000" strokeWidth={2} radius={[0, 8, 8, 0]}>
-                  <Cell fill={COLORS.yellow} />
-                  <Cell fill={COLORS.cyan} />
+                <Bar dataKey="value" name="Notices" radius={[0, 8, 8, 0]} barSize={32}>
+                  {(noticesByRole || []).map((_, i) => (
+                    <Cell key={i} fill={i === 0 ? COLORS.amber : COLORS.indigo} />
+                  ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </ChartCard>
 
-          {/* Event Registrations */}
-          {eventStats.length > 0 && (
-            <ChartCard title="Event Popularity (Registrations vs Capacity)">
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={eventStats} barGap={4}>
-                  <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" />
-                  <XAxis dataKey="name" tick={{ fontSize: 9, fontWeight: 800 }} interval={0} angle={-20} textAnchor="end" height={60} />
-                  <YAxis tick={{ fontSize: 11 }} />
+          {eventStats?.length > 0 && (
+            <ChartCard title="Event Capacity Utilization">
+              <ResponsiveContainer width="100%" height={280}>
+                <BarChart data={eventStats}>
+                  <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
+                  <XAxis dataKey="name" hide />
+                  <YAxis axisLine={false} tickLine={false} />
                   <Tooltip content={<CustomTooltip />} />
-                  <Legend
-                    formatter={(value) => <span className="font-black text-[10px] uppercase">{value}</span>}
-                  />
-                  <Bar dataKey="registered" name="Registered" fill={COLORS.green} stroke="#000" strokeWidth={2} radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="capacity" name="Max Capacity" fill={COLORS.blue} stroke="#000" strokeWidth={2} radius={[4, 4, 0, 0]} />
+                  <Legend formatter={(value) => <span className="font-bold text-[10px] uppercase text-slate-500 ml-1">{value}</span>} />
+                  <Bar dataKey="registered" name="Registered" fill={COLORS.mint} radius={[4, 4, 0, 0]} barSize={20} />
+                  <Bar dataKey="capacity" name="Max Capacity" fill="#F1F5F9" radius={[4, 4, 0, 0]} barSize={20} />
                 </BarChart>
               </ResponsiveContainer>
             </ChartCard>
@@ -371,59 +409,62 @@ export default function AnalyticsPanel() {
       </section>
 
       {/* ═══════════ CLASS-LEVEL BREAKDOWN ═══════════ */}
-      {classStats.length > 0 && (
-        <section className="space-y-6">
-          <SectionHeader icon={GraduationCap} title="Class-Level Breakdown" color={COLORS.coral} />
+      {classStats?.length > 0 && (
+        <section className="space-y-8">
+          <SectionHeader icon={GraduationCap} title="Class Breakdown" />
 
-          <ChartCard title="Students, Resources & Faculty per Class">
-            <ResponsiveContainer width="100%" height={350}>
-              <BarChart data={classStats} barGap={3}>
-                <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" />
-                <XAxis dataKey="name" tick={{ fontSize: 10, fontWeight: 900 }} interval={0} angle={-15} textAnchor="end" height={60} />
-                <YAxis tick={{ fontSize: 11 }} />
+          <ChartCard title="Resource Distribution per Class">
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={classStats} barGap={4}>
+                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} dy={10} interval={0} fontSize={10} />
+                <YAxis axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend
-                  formatter={(value) => <span className="font-black text-xs uppercase">{value}</span>}
+                <Legend 
+                  verticalAlign="top" 
+                  align="right"
+                  height={36}
+                  formatter={(value) => <span className="font-bold text-[10px] uppercase text-slate-500 tracking-wider ml-2">{value}</span>}
                 />
-                <Bar dataKey="students" name="Students" fill={COLORS.cyan} stroke="#000" strokeWidth={2} radius={[4, 4, 0, 0]} />
-                <Bar dataKey="notes" name="Resources" fill={COLORS.green} stroke="#000" strokeWidth={2} radius={[4, 4, 0, 0]} />
-                <Bar dataKey="faculty" name="Faculty" fill={COLORS.pink} stroke="#000" strokeWidth={2} radius={[4, 4, 0, 0]} />
-                <Bar dataKey="notices" name="Notices" fill={COLORS.yellow} stroke="#000" strokeWidth={2} radius={[4, 4, 0, 0]} />
+                <Bar dataKey="students" name="Students" fill={COLORS.indigo} radius={[4, 4, 0, 0]} barSize={12} />
+                <Bar dataKey="notes" name="Resources" fill={COLORS.mint} radius={[4, 4, 0, 0]} barSize={12} />
+                <Bar dataKey="faculty" name="Faculty" fill={COLORS.rose} radius={[4, 4, 0, 0]} barSize={12} />
+                <Bar dataKey="notices" name="Notices" fill={COLORS.amber} radius={[4, 4, 0, 0]} barSize={12} />
               </BarChart>
             </ResponsiveContainer>
           </ChartCard>
 
-          {/* Per-class Table */}
-          <div className="bg-white border-4 border-black rounded-3xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
-            <div className="p-6 border-b-4 border-black bg-[#FEF9C3]">
-              <p className="font-black text-sm uppercase tracking-tight">Class Details Table</p>
+          <div className="bg-white border border-gray-100 rounded-[2.5rem] shadow-sm overflow-hidden mt-8">
+            <div className="p-8 border-b border-gray-50 flex items-center justify-between">
+              <h4 className="font-bold text-slate-900 tracking-tight">Class Intelligence Table</h4>
+              <button className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest border border-indigo-100 px-4 py-1.5 rounded-full hover:bg-indigo-50 transition-colors">Export Data</button>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full text-left">
                 <thead>
-                  <tr className="border-b-4 border-black bg-[#F1F5F9]">
-                    <th className="text-left p-4 font-black text-xs uppercase">Class</th>
-                    <th className="text-center p-4 font-black text-xs uppercase">Students</th>
-                    <th className="text-center p-4 font-black text-xs uppercase">Faculty</th>
-                    <th className="text-center p-4 font-black text-xs uppercase">Resources</th>
-                    <th className="text-center p-4 font-black text-xs uppercase">Notices</th>
+                  <tr className="bg-slate-50">
+                    <th className="p-6 font-bold text-[10px] uppercase tracking-widest text-slate-400">Class Identifier</th>
+                    <th className="p-6 font-bold text-[10px] uppercase tracking-widest text-slate-400 text-center">Students</th>
+                    <th className="p-6 font-bold text-[10px] uppercase tracking-widest text-slate-400 text-center">Faculty</th>
+                    <th className="p-6 font-bold text-[10px] uppercase tracking-widest text-slate-400 text-center">Resources</th>
+                    <th className="p-6 font-bold text-[10px] uppercase tracking-widest text-slate-400 text-center">Notices</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-gray-50">
                   {classStats.map((cls, i) => (
-                    <tr key={i} className="border-b-2 border-black hover:bg-[#FEF9C3] transition-colors">
-                      <td className="p-4 font-black text-sm uppercase">{cls.name}</td>
-                      <td className="p-4 text-center">
-                        <span className="inline-block bg-[#CCFBF1] border-2 border-black rounded-lg px-3 py-1 font-black text-sm">{cls.students}</span>
+                    <tr key={i} className="group hover:bg-slate-50 transition-colors">
+                      <td className="p-6 font-bold text-slate-700 tracking-tight">{cls.name}</td>
+                      <td className="p-6 text-center">
+                        <span className="text-sm font-bold text-slate-600">{cls.students}</span>
                       </td>
-                      <td className="p-4 text-center">
-                        <span className="inline-block bg-[#FFD1D1] border-2 border-black rounded-lg px-3 py-1 font-black text-sm">{cls.faculty}</span>
+                      <td className="p-6 text-center">
+                        <span className="text-sm font-bold text-slate-600">{cls.faculty}</span>
                       </td>
-                      <td className="p-4 text-center">
-                        <span className="inline-block bg-[#DBEAFE] border-2 border-black rounded-lg px-3 py-1 font-black text-sm">{cls.notes}</span>
+                      <td className="p-6 text-center">
+                        <span className="text-sm font-bold text-slate-600">{cls.notes}</span>
                       </td>
-                      <td className="p-4 text-center">
-                        <span className="inline-block bg-[#FEF9C3] border-2 border-black rounded-lg px-3 py-1 font-black text-sm">{cls.notices}</span>
+                      <td className="p-6 text-center">
+                        <span className="text-sm font-bold text-slate-600">{cls.notices}</span>
                       </td>
                     </tr>
                   ))}
