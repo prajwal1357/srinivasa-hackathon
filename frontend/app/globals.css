@@ -1,9 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 @import "tailwindcss";
-
-
 
 :root {
   --background: 0 0% 100%;
@@ -30,7 +25,9 @@
 
 body {
   @apply bg-[#fafafa] text-slate-900;
-  font-feature-settings: "rlig" 1, "calt" 1;
+  font-feature-settings:
+    "rlig" 1,
+    "calt" 1;
 }
 
 /* Base link styles for your login/signup footers */

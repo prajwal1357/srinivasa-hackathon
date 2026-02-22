@@ -10,7 +10,6 @@ import {
   GraduationCap,
   Search,
   Check,
-  X,
   Mail,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -25,7 +24,6 @@ export default function AdminNotification() {
   const [sending, setSending] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(false);
 
-  // Fetch users when "selected" mode is chosen
   useEffect(() => {
     if (recipientType === "selected") {
       fetchUsers();
@@ -38,7 +36,7 @@ export default function AdminNotification() {
       const res = await fetch("/api/admin/users");
       const data = await res.json();
       setUsers((data.users || []).filter((u) => u.role !== "admin"));
-    } catch (err) {
+    } catch {
       toast.error("Failed to load users");
     } finally {
       setLoadingUsers(false);
@@ -47,16 +45,15 @@ export default function AdminNotification() {
 
   const toggleUser = (userId) => {
     setSelectedUsers((prev) =>
-      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
+      prev.includes(userId)
+        ? prev.filter((id) => id !== userId)
+        : [...prev, userId]
     );
   };
 
   const selectAllFiltered = () => {
     const filtered = filteredUsers.map((u) => u._id);
-    setSelectedUsers((prev) => {
-      const newSet = new Set([...prev, ...filtered]);
-      return Array.from(newSet);
-    });
+    setSelectedUsers((prev) => Array.from(new Set([...prev, ...filtered])));
   };
 
   const clearSelection = () => setSelectedUsers([]);
@@ -83,7 +80,8 @@ export default function AdminNotification() {
           title: title.trim(),
           body: body.trim(),
           recipientType,
-          recipientIds: recipientType === "selected" ? selectedUsers : undefined,
+          recipientIds:
+            recipientType === "selected" ? selectedUsers : undefined,
         }),
       });
 
@@ -97,7 +95,7 @@ export default function AdminNotification() {
       } else {
         toast.error(data.message || "Failed to send email");
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to connect to server");
     } finally {
       setSending(false);
@@ -111,186 +109,207 @@ export default function AdminNotification() {
   );
 
   const recipientOptions = [
-    { value: "all_students", label: "All Students", icon: GraduationCap, color: "bg-[#FF71CE]" },
-    { value: "all_faculty", label: "All Faculty", icon: UserCheck, color: "bg-[#01FFFF]" },
-    { value: "all", label: "Everyone", icon: Users, color: "bg-[#FFD600]" },
-    { value: "selected", label: "Select Recipients", icon: Mail, color: "bg-[#05FFA1]" },
+    { value: "all_students", label: "All Students", icon: GraduationCap },
+    { value: "all_faculty", label: "All Faculty", icon: UserCheck },
+    { value: "all", label: "Everyone", icon: Users },
+    { value: "selected", label: "Select Recipients", icon: Mail },
   ];
 
   return (
-    <div className="max-w-4xl mx-auto space-y-10 font-mono animate-in fade-in duration-500">
+    <div className="max-w-5xl mx-auto space-y-10">
 
-      {/* Header */}
-      <div className="relative overflow-hidden bg-[#FF8A5B] border-4 border-black p-8 rounded-[2rem] shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
-        <div className="absolute -top-1 -right-4 w-32 h-10 bg-[#FFD600] border-2 border-black rotate-12 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center font-black text-[10px] uppercase z-20 hidden md:flex">
-          Email Mode
-        </div>
-        <div className="flex items-center gap-6 relative z-10">
-          <div className="bg-[#1E293B] p-4 border-4 border-black shadow-[6px_6px_0px_0px_rgba(255,214,0,1)] -rotate-3">
-            <Megaphone size={40} className="text-white" strokeWidth={2.5} />
-          </div>
-          <div>
-            <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none">
-              Send Email
-            </h1>
-            <p className="font-black uppercase text-xs mt-2 tracking-widest bg-white/40 inline-block px-2 border border-black">
-              Admin Email Notifications
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* ======= HEADER (UPDATED DECENT GRADIENT) ======= */}
+      <div className="rounded-3xl p-8 bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-xl">
+  <div className="flex items-center gap-4">
+    
+    <div className="bg-white/20 backdrop-blur-md p-3 rounded-xl">
+      <Megaphone size={26} />
+    </div>
+
+    <div>
+      <h1 className="text-3xl md:text-4xl font-semibold">
+        Email Notifications
+      </h1>
+      <p className="text-white/80 text-sm mt-1">
+        Send announcements to students and faculty
+      </p>
+    </div>
+
+  </div>
+</div>
 
       <form onSubmit={handleSend} className="space-y-8">
 
-        {/* Recipient Selection */}
-        <div className="bg-white border-4 border-black p-8 rounded-3xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-          <span className="inline-block bg-[#1E293B] text-white px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-6">
-            Step 1 — Select Recipients
-          </span>
+        {/* ===== RECIPIENT SECTION ===== */}
+        <div className="bg-white p-8 rounded-3xl shadow-lg border border-slate-100 space-y-6">
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {recipientOptions.map((opt) => {
-              const Icon = opt.icon;
-              const isActive = recipientType === opt.value;
-              return (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => setRecipientType(opt.value)}
-                  className={`p-4 border-4 border-black rounded-2xl font-black text-xs uppercase text-center transition-all
-                    ${isActive
-                      ? `${opt.color} shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] -translate-y-1`
-                      : "bg-white hover:bg-gray-50 hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
-                    }`}
-                >
-                  <Icon size={24} strokeWidth={3} className="mx-auto mb-2" />
-                  {opt.label}
-                </button>
-              );
-            })}
-          </div>
+          <h2 className="text-lg font-semibold text-slate-800">
+            Select Recipients
+          </h2>
+<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+  {recipientOptions.map((opt) => {
+    const Icon = opt.icon;
+    const isActive = recipientType === opt.value;
 
-          {/* Individual User Selection */}
+    const styles = {
+      all_students: "bg-emerald-50 border-emerald-200 text-emerald-700",
+      all_faculty: "bg-indigo-50 border-indigo-200 text-indigo-700",
+      all: "bg-amber-50 border-amber-200 text-amber-700",
+      selected: "bg-rose-50 border-rose-200 text-rose-700",
+    };
+
+    const activeStyles = {
+      all_students: "bg-emerald-600 text-white border-emerald-600",
+      all_faculty: "bg-indigo-600 text-white border-indigo-600",
+      all: "bg-amber-500 text-white border-amber-500",
+      selected: "bg-rose-500 text-white border-rose-500",
+    };
+
+    return (
+      <button
+        key={opt.value}
+        type="button"
+        onClick={() => setRecipientType(opt.value)}
+        className={`p-4 rounded-xl border text-sm font-medium transition-all
+          ${
+            isActive
+              ? activeStyles[opt.value]
+              : styles[opt.value] + " hover:shadow-md"
+          }`}
+      >
+        <Icon size={20} className="mx-auto mb-2" />
+        {opt.label}
+      </button>
+    );
+  })}
+</div>
+
           {recipientType === "selected" && (
-            <div className="mt-6 space-y-4">
-              <div className="flex items-center gap-3">
+            <div className="space-y-4">
+
+              <div className="flex gap-3">
                 <div className="relative flex-1">
-                  <Search size={16} strokeWidth={3} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Search
+                    size={16}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
                   <input
                     type="text"
-                    placeholder="SEARCH USERS..."
+                    placeholder="Search users..."
                     value={userSearch}
                     onChange={(e) => setUserSearch(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 border-4 border-black rounded-xl font-bold text-xs uppercase outline-none focus:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-shadow"
+                    className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                   />
                 </div>
-                <button type="button" onClick={selectAllFiltered}
-                  className="px-4 py-3 border-4 border-black rounded-xl bg-[#05FFA1] font-black text-[10px] uppercase hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all whitespace-nowrap">
+                <button
+                  type="button"
+                  onClick={selectAllFiltered}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm"
+                >
                   Select All
                 </button>
-                <button type="button" onClick={clearSelection}
-                  className="px-4 py-3 border-4 border-black rounded-xl bg-[#FDA4AF] font-black text-[10px] uppercase hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all whitespace-nowrap">
+                <button
+                  type="button"
+                  onClick={clearSelection}
+                  className="px-4 py-2 bg-rose-500 text-white rounded-lg text-sm"
+                >
                   Clear
                 </button>
               </div>
 
-              {selectedUsers.length > 0 && (
-                <div className="px-4 py-2 bg-[#FEF9C3] border-3 border-black rounded-xl font-black text-xs uppercase">
-                  {selectedUsers.length} recipient{selectedUsers.length !== 1 ? "s" : ""} selected
-                </div>
-              )}
-
               {loadingUsers ? (
-                <div className="flex justify-center py-8">
-                  <Loader2 size={24} className="animate-spin" strokeWidth={3} />
+                <div className="flex justify-center py-6">
+                  <Loader2 className="animate-spin text-indigo-600" />
                 </div>
               ) : (
-                <div className="max-h-64 overflow-y-auto border-4 border-black rounded-xl divide-y-2 divide-black">
+                <div className="max-h-64 overflow-y-auto border border-slate-200 rounded-lg divide-y">
                   {filteredUsers.map((u) => {
                     const isSelected = selectedUsers.includes(u._id);
                     return (
                       <div
                         key={u._id}
                         onClick={() => toggleUser(u._id)}
-                        className={`p-3 flex items-center justify-between cursor-pointer transition-colors ${
-                          isSelected ? "bg-[#05FFA1]" : "bg-white hover:bg-gray-50"
+                        className={`p-3 flex justify-between items-center cursor-pointer transition ${
+                          isSelected
+                            ? "bg-indigo-50"
+                            : "hover:bg-slate-50"
                         }`}
                       >
                         <div>
-                          <p className="font-black text-xs uppercase">{u.name}</p>
-                          <p className="text-[10px] font-bold text-gray-500">{u.email}</p>
+                          <p className="font-medium text-slate-800">
+                            {u.name}
+                          </p>
+                          <p className="text-xs text-slate-500">
+                            {u.email}
+                          </p>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className={`text-[9px] font-black uppercase px-2 py-0.5 border-2 border-black rounded-lg ${
-                            u.role === "faculty" ? "bg-[#01FFFF]" : "bg-[#FF71CE]"
-                          }`}>
-                            {u.role}
-                          </span>
-                          {isSelected && <Check size={16} strokeWidth={3} />}
-                        </div>
+                        {isSelected && (
+                          <Check size={18} className="text-indigo-600" />
+                        )}
                       </div>
                     );
                   })}
-                  {filteredUsers.length === 0 && (
-                    <p className="p-4 text-center font-bold text-xs text-gray-400 uppercase">No users found</p>
-                  )}
                 </div>
               )}
             </div>
           )}
         </div>
 
-        {/* Email Content */}
-        <div className="bg-white border-4 border-black p-8 rounded-3xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] space-y-6">
-          <span className="inline-block bg-[#1E293B] text-white px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            Step 2 — Compose Email
-          </span>
+        {/* ===== EMAIL CONTENT ===== */}
+        <div className="bg-white p-8 rounded-3xl shadow-lg border border-slate-100 space-y-6">
 
-          <div className="space-y-3">
-            <label className="font-black text-xs uppercase">Subject</label>
+          <h2 className="text-lg font-semibold text-slate-800">
+            Compose Email
+          </h2>
+
+          <div>
+            <label className="text-sm font-medium text-slate-700">
+              Subject
+            </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              required
-              className="w-full p-4 border-4 border-black rounded-2xl font-black text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-none focus:translate-x-1 focus:translate-y-1 transition-all outline-none placeholder:text-black/20"
-              placeholder="e.g., URGENT: END SEMESTER SCHEDULE"
+              className="w-full mt-2 p-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+              placeholder="Enter subject..."
             />
           </div>
 
-          <div className="space-y-3">
-            <label className="font-black text-xs uppercase">Body</label>
+          <div>
+            <label className="text-sm font-medium text-slate-700">
+              Message
+            </label>
             <textarea
-              rows="8"
+              rows="6"
               value={body}
               onChange={(e) => setBody(e.target.value)}
-              required
-              className="w-full p-4 border-4 border-black rounded-2xl font-bold text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-none focus:translate-x-1 focus:translate-y-1 transition-all outline-none leading-relaxed placeholder:text-black/20"
-              placeholder="Write your email content here..."
+              className="w-full mt-2 p-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+              placeholder="Write your message..."
             />
           </div>
         </div>
 
-        {/* Send Button */}
+        {/* ===== SEND BUTTON ===== */}
         <button
           type="submit"
           disabled={sending}
-          className={`w-full flex items-center justify-center gap-4 border-4 border-black p-6 rounded-2xl font-black uppercase italic tracking-tighter text-2xl transition-all
-            ${sending
-              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-              : "bg-[#4ADE80] shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1"
+          className={`w-full py-4 rounded-2xl text-lg font-semibold transition-all
+            ${
+              sending
+                ? "bg-slate-300 text-slate-500"
+                : "bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg"
             }`}
         >
           {sending ? (
-            <>
-              <Loader2 size={28} className="animate-spin" strokeWidth={3} />
+            <span className="flex items-center justify-center gap-2">
+              <Loader2 className="animate-spin" size={20} />
               Sending...
-            </>
+            </span>
           ) : (
-            <>
-              <Send size={28} strokeWidth={3} />
+            <span className="flex items-center justify-center gap-2">
+              <Send size={20} />
               Send Email
-            </>
+            </span>
           )}
         </button>
       </form>

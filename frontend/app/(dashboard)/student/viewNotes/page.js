@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState, useMemo } from "react";
+
+import React, { useEffect, useState, useMemo } from "react";
 import {
   ChevronRight,
   Folder,
@@ -12,14 +13,19 @@ import {
   ArrowLeft,
   ExternalLink,
   GraduationCap,
+  Search,
+  Sparkles,
+  Clock,
+  Info
 } from "lucide-react";
+
 
 export default function StudentViewNotes() {
   const [notes, setNotes] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Navigation State
+  // Navigation State Logic (Preserved)
   const [selectedSemester, setSelectedSemester] = useState(null);
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedUnit, setSelectedUnit] = useState(null);
@@ -47,7 +53,7 @@ export default function StudentViewNotes() {
     }
   };
 
-  // Derive lists based on selection
+  // Memoized Logic (Preserved)
   const semesters = useMemo(() => Object.keys(notes).sort((a, b) => Number(a) - Number(b)), [notes]);
 
   const subjects = useMemo(() => {
@@ -70,7 +76,7 @@ export default function StudentViewNotes() {
     );
   }, [notes, selectedSemester, selectedSubject, selectedUnit]);
 
-  // Navigation helpers
+  // Navigation helpers (Preserved)
   const goBack = () => {
     if (selectedUnit !== null) {
       setSelectedUnit(null);
@@ -87,80 +93,105 @@ export default function StudentViewNotes() {
     setSelectedUnit(null);
   };
 
-  // Current view title
-  const getViewTitle = () => {
-    if (selectedUnit !== null) return `Unit ${selectedUnit}`;
-    if (selectedSubject) return selectedSubject;
-    if (selectedSemester) return `Semester ${selectedSemester}`;
-    return "All Semesters";
-  };
-
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 size={48} className="animate-spin text-black" strokeWidth={3} />
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <Loader2 size={48} className="animate-spin text-[#F97316]" strokeWidth={2} />
+        <p className="text-slate-400 font-bold text-sm uppercase tracking-[0.2em]">Accessing Library</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="max-w-3xl mx-auto p-8">
-        <div className="bg-[#FDA4AF] border-4 border-black rounded-3xl p-10 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] text-center font-mono">
-          <FileText size={48} strokeWidth={3} className="mx-auto mb-4" />
-          <p className="font-black text-lg uppercase">{error}</p>
+      <div className="max-w-3xl mx-auto p-8 animate-fade-in">
+        <div className="bg-rose-50 border border-rose-100 rounded-[2rem] p-10 text-center">
+          <FileText size={48} className="mx-auto mb-4 text-rose-400" />
+          <p className="font-bold text-slate-900 text-lg uppercase tracking-tight">{error}</p>
+          <button onClick={fetchNotes} className="mt-4 text-sm font-bold text-rose-600 hover:underline">Try Again</button>
         </div>
       </div>
     );
   }
 
-  const folderColors = ["bg-[#01FFFF]", "bg-[#FF71CE]", "bg-[#FFD600]", "bg-[#05FFA1]", "bg-[#CCFBF1]", "bg-[#C4B5FD]", "bg-[#FFEDD5]", "bg-[#FDA4AF]"];
+  // Refined EduWay palette variants
+  const folderGradients = [
+    "from-orange-50 to-white border-orange-100 text-orange-700",
+    "from-blue-50 to-white border-blue-100 text-blue-700",
+    "from-emerald-50 to-white border-emerald-100 text-emerald-700",
+    "from-indigo-50 to-white border-indigo-100 text-indigo-700",
+    "from-amber-50 to-white border-amber-100 text-amber-700",
+    "from-violet-50 to-white border-violet-100 text-violet-700",
+  ];
 
   return (
-    <div className="space-y-8 font-mono animate-in fade-in duration-500">
+    <div className="space-y-10 animate-fade-in pb-20" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
 
-      {/* Header */}
-      <div className="relative overflow-hidden bg-[#05FFA1] border-4 border-black p-8 rounded-[2rem] shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
-        <div className="absolute top-5 right-8 w-28 h-8 bg-[#1E293B] border-2 border-black rotate-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center font-black text-[10px] uppercase text-white hidden md:flex">
-          Study Hub
-        </div>
-        <div className="flex items-center gap-5 relative z-10">
-          <div className="bg-white p-4 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] -rotate-3 rounded-xl">
-            <BookOpen size={36} strokeWidth={3} />
+      {/* ═══════════ CSS INJECTOR ═══════════ */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #E2E8F0;
+          border-radius: 10px;
+        }
+      `}} />
+
+      {/* ═══════════ HERO HEADER ═══════════ */}
+      <div className="relative overflow-hidden bg-slate-900 text-white p-10 md:p-14 rounded-3xl md:rounded-[3rem] shadow-xl shadow-slate-200">
+        <div className="absolute top-0 right-0 w-[450px] h-[450px] bg-[#F97316]/10 blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/10 blur-[100px] rounded-full -translate-x-1/4 translate-y-1/2" />
+        
+        <div className="relative z-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full mb-8 border border-white/10">
+            <Sparkles size={14} className="text-[#F97316] fill-[#F97316]" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/80">Digital Library</span>
           </div>
-          <div>
-            <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-none">
-              Study Resources
-            </h1>
-            <p className="font-black uppercase text-xs mt-2 tracking-widest opacity-60">
-              Browse approved notes & materials
-            </p>
-          </div>
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
+            Study Resources
+          </h1>
+          <p className="max-w-xl mt-6 font-medium text-slate-400 leading-relaxed text-sm md:text-base opacity-90">
+            Navigate through curated academic materials. Access approved notes, assignments, and reference guides organized by semester and unit.
+          </p>
         </div>
       </div>
 
-      {/* Breadcrumb + Back Button */}
-      <div className="flex items-center gap-3">
+      {/* ═══════════ NAVIGATION / BREADCRUMBS ═══════════ */}
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
         {selectedSemester && (
           <button onClick={goBack}
-            className="p-3 bg-white border-4 border-black rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all">
-            <ArrowLeft size={18} strokeWidth={3} />
+            className="p-3 bg-white border border-slate-100 rounded-2xl shadow-sm text-slate-400 hover:text-[#F97316] hover:bg-orange-50 transition-all group shrink-0">
+            <ArrowLeft size={20} className="group-active:-translate-x-1 transition-transform" />
           </button>
         )}
 
-        <nav className="flex items-center gap-2 text-sm bg-white border-4 border-black rounded-xl px-4 py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] overflow-x-auto flex-1">
+        <nav className="flex items-center gap-1 text-sm bg-white border border-slate-100 rounded-2xl px-5 py-3.5 shadow-sm overflow-x-auto custom-scrollbar w-full">
           <button onClick={resetAll}
-            className={`flex items-center gap-1 font-black text-xs uppercase whitespace-nowrap hover:text-blue-600 transition-colors ${!selectedSemester ? "text-black" : "text-gray-400"}`}>
-            <Home size={14} strokeWidth={3} />
-            Semesters
+            className={`flex items-center gap-2 font-bold text-xs uppercase tracking-widest whitespace-nowrap transition-colors ${!selectedSemester ? "text-[#F97316]" : "text-slate-400 hover:text-slate-600"}`}>
+            <Home size={14} />
+            Library
           </button>
 
           {selectedSemester && (
             <>
-              <ChevronRight size={14} className="text-gray-300 shrink-0" />
+              <ChevronRight size={14} className="text-slate-200 shrink-0 mx-1" />
               <button
                 onClick={() => { setSelectedSubject(null); setSelectedUnit(null); }}
-                className={`font-black text-xs uppercase whitespace-nowrap hover:text-blue-600 transition-colors ${selectedSemester && !selectedSubject ? "text-black" : "text-gray-400"}`}>
+                className={`font-bold text-xs uppercase tracking-widest whitespace-nowrap transition-colors ${selectedSemester && !selectedSubject ? "text-[#F97316]" : "text-slate-400 hover:text-slate-600"}`}>
                 Sem {selectedSemester}
               </button>
             </>
@@ -168,10 +199,10 @@ export default function StudentViewNotes() {
 
           {selectedSubject && (
             <>
-              <ChevronRight size={14} className="text-gray-300 shrink-0" />
+              <ChevronRight size={14} className="text-slate-200 shrink-0 mx-1" />
               <button
                 onClick={() => setSelectedUnit(null)}
-                className={`font-black text-xs uppercase whitespace-nowrap hover:text-blue-600 transition-colors ${selectedSubject && selectedUnit === null ? "text-black" : "text-gray-400"}`}>
+                className={`font-bold text-xs uppercase tracking-widest whitespace-nowrap transition-colors ${selectedSubject && selectedUnit === null ? "text-[#F97316]" : "text-slate-400 hover:text-slate-600"}`}>
                 {selectedSubject}
               </button>
             </>
@@ -179,41 +210,46 @@ export default function StudentViewNotes() {
 
           {selectedUnit !== null && (
             <>
-              <ChevronRight size={14} className="text-gray-300 shrink-0" />
-              <span className="font-black text-xs uppercase text-black whitespace-nowrap">Unit {selectedUnit}</span>
+              <ChevronRight size={14} className="text-slate-200 shrink-0 mx-1" />
+              <span className="font-bold text-xs uppercase tracking-widest text-[#F97316] whitespace-nowrap">Unit {selectedUnit}</span>
             </>
           )}
         </nav>
       </div>
 
-      {/* CONTENT AREA */}
-      <main>
+      {/* ═══════════ CONTENT AREA ═══════════ */}
+      <main className="min-h-[400px]">
 
         {/* VIEW 1: SEMESTERS */}
         {!selectedSemester && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {semesters.length === 0 ? (
-              <div className="col-span-full bg-white border-4 border-black rounded-3xl p-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] text-center">
-                <BookOpen size={48} strokeWidth={3} className="mx-auto mb-4 text-gray-300" />
-                <p className="font-black text-lg uppercase text-gray-400">No notes available yet</p>
-                <p className="font-bold text-xs text-gray-300 uppercase mt-2">Notes will appear here once uploaded and approved</p>
+              <div className="col-span-full bg-white border border-dashed border-slate-200 rounded-[2.5rem] p-20 text-center shadow-sm">
+                <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-6 text-slate-200">
+                  <BookOpen size={40} />
+                </div>
+                <p className="font-bold text-xl text-slate-900 mb-2">No Resources Found</p>
+                <p className="text-slate-400 text-sm font-medium">Materials will populate here once verified by faculty.</p>
               </div>
             ) : (
               semesters.map((sem, i) => (
                 <button
                   key={sem}
                   onClick={() => setSelectedSemester(sem)}
-                  className={`${folderColors[i % folderColors.length]} group text-left border-4 border-black rounded-2xl p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all`}
+                  className={`group relative overflow-hidden bg-white border border-slate-100 rounded-[2.5rem] p-8 text-left shadow-sm hover:shadow-xl hover:shadow-slate-200/40 transition-all duration-300 hover:-translate-y-1`}
                 >
-                  <div className="flex justify-between items-start mb-5">
-                    <div className="w-12 h-12 bg-white border-3 border-black rounded-xl flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] group-hover:rotate-6 transition-transform">
-                      <Folder size={24} strokeWidth={3} />
+                  <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-400 to-amber-300 opacity-0 group-hover:opacity-100 transition-opacity`} />
+                  <div className="flex justify-between items-start mb-8">
+                    <div className="w-14 h-14 bg-orange-50 text-[#F97316] rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+                      <Folder size={28} />
                     </div>
-                    <ChevronRight size={18} strokeWidth={3} className="mt-1 group-hover:translate-x-1 transition-transform" />
+                    <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-slate-900 group-hover:text-white transition-all">
+                       <ChevronRight size={18} />
+                    </div>
                   </div>
-                  <h3 className="font-black text-xl uppercase tracking-tight">Semester {sem}</h3>
-                  <p className="font-bold text-[11px] uppercase text-black/50 mt-1">
-                    {notes[sem].length} resource{notes[sem].length !== 1 ? "s" : ""}
+                  <h3 className="font-extrabold text-2xl text-slate-900 tracking-tight">Semester {sem}</h3>
+                  <p className="font-bold text-[11px] uppercase tracking-[0.15em] text-slate-400 mt-2 flex items-center gap-1.5">
+                    <Layers size={12} /> {notes[sem].length} Resources
                   </p>
                 </button>
               ))
@@ -223,102 +259,100 @@ export default function StudentViewNotes() {
 
         {/* VIEW 2: SUBJECTS */}
         {selectedSemester && !selectedSubject && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {subjects.length === 0 ? (
-              <div className="col-span-full bg-white border-4 border-black rounded-3xl p-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] text-center">
-                <p className="font-black text-lg uppercase text-gray-400">No subjects found</p>
-              </div>
-            ) : (
-              subjects.map((sub, i) => (
-                <button
-                  key={sub}
-                  onClick={() => setSelectedSubject(sub)}
-                  className={`${folderColors[(i + 2) % folderColors.length]} group text-left border-4 border-black rounded-2xl p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all`}
-                >
-                  <div className="flex justify-between items-start mb-5">
-                    <div className="w-12 h-12 bg-white border-3 border-black rounded-xl flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] group-hover:rotate-6 transition-transform">
-                      <BookOpen size={24} strokeWidth={3} />
-                    </div>
-                    <ChevronRight size={18} strokeWidth={3} className="mt-1 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                  <h3 className="font-black text-lg uppercase tracking-tight">{sub}</h3>
-                </button>
-              ))
-            )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {subjects.map((sub, i) => (
+              <button
+                key={sub}
+                onClick={() => setSelectedSubject(sub)}
+                className="group relative bg-white border border-slate-100 rounded-[2.5rem] p-8 text-left shadow-sm hover:shadow-xl hover:shadow-slate-200/40 transition-all duration-300 hover:-translate-y-1"
+              >
+                <div className="flex justify-between items-center">
+                   <div className="flex items-center gap-5">
+                      <div className="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                        <BookOpen size={26} />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Subject Module</p>
+                        <h3 className="font-extrabold text-xl text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors">{sub}</h3>
+                      </div>
+                   </div>
+                   <ChevronRight size={20} className="text-slate-200 group-hover:text-slate-400 transition-colors mr-2" />
+                </div>
+              </button>
+            ))}
           </div>
         )}
 
         {/* VIEW 3: UNITS */}
         {selectedSubject && selectedUnit === null && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {units.length === 0 ? (
-              <div className="col-span-full bg-white border-4 border-black rounded-3xl p-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] text-center">
-                <p className="font-black text-lg uppercase text-gray-400">No units found</p>
-              </div>
-            ) : (
-              units.map((unit, i) => (
-                <button
-                  key={unit}
-                  onClick={() => setSelectedUnit(unit)}
-                  className={`${folderColors[(i + 4) % folderColors.length]} group text-left border-4 border-black rounded-2xl p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all`}
-                >
-                  <div className="flex justify-between items-start mb-5">
-                    <div className="w-12 h-12 bg-white border-3 border-black rounded-xl flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] group-hover:rotate-6 transition-transform">
-                      <Layers size={24} strokeWidth={3} />
-                    </div>
-                    <ChevronRight size={18} strokeWidth={3} className="mt-1 group-hover:translate-x-1 transition-transform" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {units.map((unit, i) => (
+              <button
+                key={unit}
+                onClick={() => setSelectedUnit(unit)}
+                className="group bg-white border border-slate-100 rounded-[2.5rem] p-8 text-left shadow-sm hover:shadow-xl hover:shadow-slate-200/40 transition-all duration-300 hover:-translate-y-1"
+              >
+                <div className="flex flex-col items-center text-center gap-5">
+                  <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-3xl flex items-center justify-center shadow-inner group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                    <Layers size={32} />
                   </div>
-                  <h3 className="font-black text-xl uppercase tracking-tight">Unit {unit}</h3>
-                </button>
-              ))
-            )}
+                  <div>
+                    <h3 className="font-extrabold text-2xl text-slate-900 tracking-tight">Unit {unit}</h3>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">Section Module</p>
+                  </div>
+                </div>
+              </button>
+            ))}
           </div>
         )}
 
         {/* VIEW 4: NOTES LIST */}
         {selectedUnit !== null && (
-          <div className="space-y-4">
+          <div className="grid gap-4">
             {filteredNotes.length === 0 ? (
-              <div className="bg-white border-4 border-black rounded-3xl p-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] text-center">
-                <FileText size={48} strokeWidth={3} className="mx-auto mb-4 text-gray-300" />
-                <p className="font-black text-lg uppercase text-gray-400">No notes in this unit</p>
+              <div className="bg-white border border-slate-100 rounded-[3rem] p-20 text-center">
+                <FileText size={48} className="mx-auto mb-4 text-slate-200" />
+                <p className="font-bold text-lg text-slate-400 uppercase">No documents in this unit</p>
               </div>
             ) : (
               filteredNotes.map((note) => (
                 <div
                   key={note._id}
-                  className="bg-white border-4 border-black rounded-2xl p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all"
+                  className="group bg-white border border-gray-100 rounded-3xl md:rounded-[2rem] p-6 md:p-8 shadow-sm hover:shadow-xl hover:shadow-slate-200/40 transition-all relative overflow-hidden"
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex items-start gap-4">
-                      <div className={`shrink-0 w-12 h-12 rounded-xl border-3 border-black flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${
-                        note.uploaderRole === "student" ? "bg-[#FFEDD5]" : "bg-[#DBEAFE]"
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                    <div className="flex items-start gap-6 min-w-0">
+                      <div className={`shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center shadow-inner transition-colors ${
+                        note.uploaderRole === "student" ? "bg-amber-50 text-amber-600" : "bg-indigo-50 text-indigo-600"
                       }`}>
-                        <FileText size={22} strokeWidth={3} />
+                        <FileText size={28} />
                       </div>
-                      <div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-black text-lg uppercase tracking-tight">{note.title}</h3>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-3 mb-2 flex-wrap">
+                          <h3 className="font-extrabold text-xl text-slate-900 tracking-tight truncate leading-tight group-hover:text-orange-500 transition-colors">
+                            {note.title}
+                          </h3>
                           {note.uploaderRole === "student" && (
-                            <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-[#FFEDD5] border-2 border-black rounded-lg flex items-center gap-1">
-                              <GraduationCap size={10} strokeWidth={3} />
-                              Student
+                            <span className="text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-1 bg-amber-100 text-amber-700 rounded-lg flex items-center gap-1.5 border border-amber-200/50">
+                              <GraduationCap size={10} />
+                              Peer Share
                             </span>
                           )}
                         </div>
 
                         {note.description && (
-                          <p className="text-xs text-gray-500 mt-1 line-clamp-2">{note.description}</p>
+                          <p className="text-sm text-slate-500 font-medium leading-relaxed mb-4 line-clamp-2">{note.description}</p>
                         )}
 
-                        <div className="flex flex-wrap gap-3 mt-2">
-                          <span className="text-[10px] font-black uppercase text-gray-400">
-                            {note.subject} • Unit {note.unit}
+                        <div className="flex flex-wrap gap-x-6 gap-y-2 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                          <span className="flex items-center gap-2">
+                             <Layers size={14} className="text-slate-300" />
+                             Unit {note.unit} • {note.subject}
                           </span>
                           {note.uploadedBy?.name && (
-                            <span className="text-[10px] font-bold text-gray-400 flex items-center gap-1">
-                              <UserCircle size={11} strokeWidth={3} />
-                              {note.uploadedBy.name}
+                            <span className="flex items-center gap-2">
+                              <UserCircle size={14} className="text-slate-300" />
+                              <span className="text-slate-500">{note.uploadedBy.name}</span>
                             </span>
                           )}
                         </div>
@@ -329,10 +363,10 @@ export default function StudentViewNotes() {
                       href={note.fileUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="shrink-0 flex items-center justify-center gap-2 px-6 py-3 bg-[#1E293B] text-white border-4 border-black rounded-xl font-black text-xs uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
+                      className="shrink-0 flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-slate-200 hover:bg-[#F97316] transition-all hover:scale-[1.02] active:scale-100"
                     >
-                      <ExternalLink size={14} strokeWidth={3} />
-                      View
+                      <ExternalLink size={16} strokeWidth={2.5} />
+                      View Doc
                     </a>
                   </div>
                 </div>
@@ -341,6 +375,16 @@ export default function StudentViewNotes() {
           </div>
         )}
       </main>
+
+      {/* ═══════════ FOOTER INFO ═══════════ */}
+      <div className="flex items-center justify-center pt-14">
+        <div className="bg-white px-6 py-2.5 rounded-full border border-gray-100 flex items-center gap-3 shadow-sm">
+          <Info size={16} className="text-[#F97316]" />
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            Approved resources are synchronized daily // Access Level: Standard Student
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
