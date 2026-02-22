@@ -68,10 +68,12 @@ export async function POST(req) {
 
     /* ☁ Upload to Cloudinary */
     const uploadResponse = await cloudinary.uploader.upload(base64File, {
-      resource_type: "raw",
+      resource_type: "auto",
       folder: "student_uploads",
       use_filename: true,
       unique_filename: true,
+      filename_override: file.name, // Ensure filename is passed
+      flags: "attachment:false"
     });
 
     /* 💾 Save in DB */

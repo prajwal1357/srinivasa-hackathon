@@ -58,23 +58,24 @@ export async function POST(req) {
 
     /* ☁ Upload to Cloudinary */
     /* ☁ Upload to Cloudinary */
-const uploadResponse = await new Promise((resolve, reject) => {
-  cloudinary.uploader.upload_stream(
-    {
-      resource_type: "auto", // Keeps detection automatic
-      folder: "lms_uploads",
-      // Force "attachment" to false if you want it to open in browser
-      flags: "attachment:false", 
-      // This helps browser recognize the file extension in the URL
-      use_filename: true,
-      unique_filename: true,
-    },
-    (error, result) => {
-      if (error) reject(error);
-      else resolve(result);
-    }
-  ).end(buffer);
-});
+    /* ☁ Upload to Cloudinary */
+    const uploadResponse = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          resource_type: "auto",
+          folder: "lms_uploads",
+          // use_filename and unique_filename help preserve extensions
+          use_filename: true,
+          unique_filename: true,
+          // Explicitly setting a transformation that forces display if possible
+          raw_convert: "aspose", // Not needed, but just in case
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      ).end(buffer);
+    });
 
     /* 💾 Save in DB */
     const newNote = await Note.create({

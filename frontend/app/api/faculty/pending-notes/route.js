@@ -4,6 +4,7 @@ import ClassFaculty from "@/models/ClassFaculty";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { jwtVerify } from "jose";
+import Class from "@/models/Class";
 
 export async function GET() {
   try {
